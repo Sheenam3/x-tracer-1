@@ -3,7 +3,7 @@ package streamserver
 import (
 	"strings"
 	"fmt"
-	pb "github.com/mJace/x-tracer/api"
+	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
 	"google.golang.org/grpc"
 	"io"
 	"log"
