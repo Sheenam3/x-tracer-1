@@ -2,8 +2,8 @@ package streamclient
 
 import (
 	"context"
-	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
-	pp "github.com/ITRI-ICL-Peregrine/x-tracer/parse/probeparser"
+	pb "github.com/Sheenam3/x-tracer/api"
+	pp "github.com/Sheenam3/x-tracer/parse/probeparser"
 	"google.golang.org/grpc"
 	"log"
 //	"strconv"

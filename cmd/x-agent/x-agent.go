@@ -3,14 +3,20 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/pkg/streamclient"
+	"github.com/Sheenam3/x-tracer/pkg/streamclient"
 	"github.com/docker/docker/client"
+	//probeparser "github.com/sheenam3/tcptracer-goparser/parser"
+//	"github.com/Sheenam3/x-tracer/parse/probeparser"
 	"log"
 	"os"
 	"strings"
 	"time"
 )
 
+
+//var Probelogtracer []probeparser.Log
+//var Probelogconnect []probeparser.Log
+//var Probename [2]string
 
 func main (){
 
@@ -32,7 +38,6 @@ func main (){
 	//parse the probenames
 
 	Probe := strings.Split(probeName, ",")
-
 //       log.Printf("Name of Probe Tool  %s", Probe)
 /*
 	for i:=0;i<2;i++ {
