@@ -5,7 +5,6 @@ GOPATH = $(shell go env GOPATH)
 BINNAME     ?= x-tracer
 AGENT_NAME  ?= x-agent
 
-NS ?= sheenam3
 IMAGE  ?= x-agent
 VERSION ?= latest
 # go option
@@ -23,7 +22,7 @@ GIT_TAG    = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
 GIT_DIRTY  = $(shell test -n "`git status --porcelain`" && echo "dirty" || echo "clean")
 
 .PHONY: all
-all: tracer agent build-image push-image
+all: tracer agent 
 
 # ------------------------------------------------------------------------------
 #  build
@@ -41,18 +40,14 @@ $(BINDIR)/$(AGENT_NAME): $(SRC)
 	@echo "====    Build x-agent    ===="
 	GO111MODULE=on go build $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $(BINDIR)/$(AGENT_NAME) ./cmd/x-agent
 
-.PHONY: build-image
-build-image:
+.PHONY: release
+release:
 	docker build --pull=false -f build/Dockerfile -t "x-agent" . --no-cache
 
-.PHONY: push-image
-push-image:
-	docker tag x-agent $(NS)/$(IMAGE):$(VERSION)
-	docker push  $(NS)/$(IMAGE):$(VERSION)
-#	docker save x-agent | gzip > x-agent.tar.gz
-#	scp x-agent.tar.gz root@node2:~/
-#	ssh root@node2 'docker load < x-agent.tar.gz
-
+.PHONY: publish
+publish:
+	docker tag x-agent $(DOCKER_ACCOUNT)/$(IMAGE):$(VERSION)
+	docker push  $(DOCKER_ACCOUNT)/$(IMAGE):$(VERSION)
 
 # ------------------------------------------------------------------------------
 #  clean
@@ -60,7 +55,4 @@ push-image:
 clean:
 	@rm -rf $(BINDIR) ./_dist
 	@docker rmi x-agent
-	@docker rmi sheenam3/x-agent:latest
-#	@rm x-agent.tar.gz
-#	@ssh root@node2 'docker rmi x-agent'
-#	@ssh root@node2 'rm ~/x-agent.tar.gz' 
+	@docker rmi $(DOCKER_ACCOUNT)/$(IMAGE):$(VERSION)
