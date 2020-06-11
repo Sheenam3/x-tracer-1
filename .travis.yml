@@ -7,20 +7,18 @@ services:
 
 script:
   - 'make'
-  - 'make tracer'
-  - 'make agent'
-  - 'make release'
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u="$DOCKER_ACCOUNT" -p="$DOCKER_PW";
+    make release;
     make publish;
     fi
   - if [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u="$DOCKER_ACCOUNT" -p="$DOCKER_PW";
-    make docker_deploy tag=latest;
+    make release;
+    make publish;
     fi
-
 
 notifications:
   email: false
