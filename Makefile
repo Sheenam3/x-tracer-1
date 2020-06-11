@@ -5,7 +5,6 @@ GOPATH = $(shell go env GOPATH)
 BINNAME     ?= x-tracer
 AGENT_NAME  ?= x-agent
 
-NS ?= "replace_with_your_docker_hub_id"
 IMAGE  ?= x-agent
 VERSION ?= latest
 # go option
@@ -47,10 +46,8 @@ release:
 
 .PHONY: publish
 publish:
-	docker tag x-agent $(NS)/$(IMAGE):$(VERSION)
-	docker push  $(NS)/$(IMAGE):$(VERSION)
-
-
+	docker tag x-agent $(DOCKER_ACCOUNT)/$(IMAGE):$(VERSION)
+	docker push  $(DOCKER_ACCOUNT)/$(IMAGE):$(VERSION)
 
 # ------------------------------------------------------------------------------
 #  clean
@@ -58,4 +55,4 @@ publish:
 clean:
 	@rm -rf $(BINDIR) ./_dist
 	@docker rmi x-agent
-	@docker rmi $(NS)/$(IMAGE):$(VERSION)
+	@docker rmi $(DOCKER_ACCOUNT)/$(IMAGE):$(VERSION)

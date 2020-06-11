@@ -1,0 +1,26 @@
+sudo: required
+language: go
+go: 
+  - 1.14.3
+services:
+  - docker
+
+script:
+  - 'make'
+  - 'make tracer'
+  - 'make agent'
+  - 'make release'
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u="$DOCKER_ACCOUNT" -p="$DOCKER_PW";
+    make publish;
+    fi
+  - if [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    make docker_deploy tag=latest;
+    fi
+
+
+notifications:
+  email: false
