@@ -17,7 +17,7 @@ after_success:
     make publish;
     fi
   - if [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker login -u="$DOCKER_ACCOUNT" -p="$DOCKER_PW";
     make docker_deploy tag=latest;
     fi
 
