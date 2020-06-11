@@ -18,8 +18,10 @@ after_success:
     fi
   - if [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u="$DOCKER_ACCOUNT" -p="$DOCKER_PW";
-    make docker_deploy tag=latest;
+    make publish;
     fi
+  - docker login -u="$DOCKER_ACCOUNT" -p="$DOCKER_PW";
+    make publish;
 
 
 notifications:
