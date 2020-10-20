@@ -9,7 +9,10 @@ x-tracer includes 7 ebp tools(BCC),probes to trace the process events:
 3. New executed processes
 4. Cache kernel function calls
 
+<h3>Architecture</h3>
 
 [Architecture](https://github.com/ITRI-ICL-Peregrine/x-tracer/wiki/Architecture)
+
+<h3>Installation</h3>
 
 [Installation](https://github.com/ITRI-ICL-Peregrine/x-tracer/wiki/Installation-on-Ubuntu-18.04)
