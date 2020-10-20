@@ -48,7 +48,7 @@ sudo make install
 popd
 
 ``` 
-<h3>3. Get x-tracer</h3>
+<h3>3. Get and run x-tracer</h3>
 
 ```
 go get github.com/ITRI-ICL-Peregrine/x-tracer
