@@ -18,7 +18,7 @@ Linux Kernel: 4.15.0-64-generic
 
 Currently tested with go1.14.2
  
-<h3>2. Install BCC tools </h3>
+<h3>2. Install BCC tools(on master node) </h3>
 
 For Bionic(Ubuntu 18.04 LTS)
 
