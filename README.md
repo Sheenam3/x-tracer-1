@@ -1,9 +1,10 @@
 # x-tracer
 
-x-tracer traces the process log inside a pod and stream the logs to the x-tracer server in real time.
+x-tracer provides the process-level visibility inside the Kubernetes pod in real time.
+As containers are isolated, lightweight which makes it difficult to look inside what could go wrong because they totally run on a separate namespace and PIDs inside containers are different as from their hosts which doesn't provide us with a clear view of what processes are running inside a particular pod or container.
+To make it simple, x-tracer is beautifully integrated with BCC tools to provide such kind of visibility. 
 
-x-tracer includes 7 ebp tools(BCC),probes to trace the process events:
-
+Currently, x-tracer includes 7 ebp tools(BCC),probes to trace the process events:
 1. Tcp connections: closed, active, established, life
 2. Block device I/O 
 3. New executed processes
