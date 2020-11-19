@@ -2,9 +2,9 @@ package pkg
 
 import (
 	"fmt"
-	pb "github.com/Sheenam3/x-tracer-gocui/api"
-	"github.com/Sheenam3/x-tracer-gocui/database"
-	"github.com/Sheenam3/x-tracer-gocui/events"
+	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/database"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
 	"github.com/gogo/protobuf/sortkeys"
 	"google.golang.org/grpc"
 	"io"
