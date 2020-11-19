@@ -2,8 +2,8 @@ package pkg
 
 import (
 	"context"
-	pb "github.com/Sheenam3/x-tracer-gocui/api"
-	pp "github.com/Sheenam3/x-tracer-gocui/parse/probeparser"
+	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
+	pp "github.com/ITRI-ICL-Peregrine/x-tracer/parse/probeparser"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"
