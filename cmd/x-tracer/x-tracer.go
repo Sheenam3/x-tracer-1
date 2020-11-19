@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"github.com/Sheenam3/x-tracer-gocui/database"
-	"github.com/Sheenam3/x-tracer-gocui/events"
-	"github.com/Sheenam3/x-tracer-gocui/pkg"
-	"github.com/Sheenam3/x-tracer-gocui/ui"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/database"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/pkg"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/ui"
 )
 
 func main() {
