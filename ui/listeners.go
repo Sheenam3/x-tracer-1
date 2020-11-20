@@ -2,8 +2,8 @@ package ui
 
 import (
 	"fmt"
-	"github.com/Sheenam3/x-tracer-gocui/events"
-	"github.com/Sheenam3/x-tracer-gocui/pkg"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/pkg"
 	"github.com/jroimartin/gocui"
 )
 
