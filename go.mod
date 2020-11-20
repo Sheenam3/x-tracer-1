@@ -1,4 +1,4 @@
-module github.com/Sheenam3/x-tracer-gocui
+module github.com/ITRI-ICL-Peregrine/x-tracer
 
 go 1.12
 
