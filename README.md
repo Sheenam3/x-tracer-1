@@ -15,11 +15,11 @@ Currently, x-tracer includes 7 ebp tools(BCC),probes to trace the process events
   
 ## Architecture
 
-[Architecture](https://github.com/ITRI-ICL-Peregrine/x-tracer/wiki/Architecture)
+[Architecture](docs/Architecture.md)
 
 ## Installation Steps
 
-[Installation](https://github.com/ITRI-ICL-Peregrine/x-tracer/wiki/x-tracer-Installation)
+[Installation](docs/x-tracer-installation.md)
 
 
 
