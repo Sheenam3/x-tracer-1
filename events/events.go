@@ -88,3 +88,4 @@ func WriteToFile(filename string, data string) error {
 	}
 	return file.Sync()
 }
+

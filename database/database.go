@@ -689,3 +689,4 @@ func DeleteESLogs() int {
 	return del
 
 }
+

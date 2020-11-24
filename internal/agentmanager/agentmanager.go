@@ -82,7 +82,7 @@ func (a *agent) getAgentPodObject() *v1.Pod {
 			Containers: []v1.Container{
 				{
 					Name:  "agent",
-					Image: "sheenam3/x-agent",
+					Image: "itriperegrine/x-agent",
 					/*Command: []string{
 					"sleep",
 					"9900000" },*/
