@@ -34,3 +34,4 @@ func stringFormatBoth(fg, bg int, str string, args []string) string {
 func frameText(text string) string {
 	return stringFormatBoth(15, 0, text, []string{"1"})
 }
+
