@@ -71,3 +71,4 @@ type CacheStatLogEvent struct {
 	Read_hit  string
 	Write_hit string
 }
+

@@ -37,3 +37,4 @@ func versionAuthor() string {
 func versionTitle(width int) string {
 	return "⣿" + versionBanner() + pad.Left(versionAuthor(), width-len(versionBanner()), " ")
 }
+
