@@ -57,8 +57,8 @@ func (a *agent) getAgentService() *v1.Service {
 func (a *agent) getAgentPodObject() *v1.Pod {
 	t := true
 	var user int64 = 0
-	net := "tcptracer,tcpconnect,tcpaccept,tcplife,execsnoop,biosnoop,cachetop"
-	//var pathType = v1.HostPathDirectory
+	//	net := "tcptracer,tcpconnect,tcpaccept,tcplife,execsnoop,biosnoop,cachetop"
+	//var pathType = v1.HostPathDirectory 
 	return &v1.Pod{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "pod",
