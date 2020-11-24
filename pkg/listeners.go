@@ -1,8 +1,8 @@
 package pkg
 
 import (
-	"github.com/ITRI-ICL-Peregrine/x-tracer/database"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
+	"github.com/Sheenam3/x-tracer-1/database"
+	"github.com/Sheenam3/x-tracer-1/events"
 	"os"
 )
 

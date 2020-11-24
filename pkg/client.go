@@ -2,8 +2,8 @@ package pkg
 
 import (
 	"context"
-	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
-	pp "github.com/ITRI-ICL-Peregrine/x-tracer/parse/probeparser"
+	pb "github.com/Sheenam3/x-tracer-1/api"
+	pp "github.com/Sheenam3/x-tracer-1/parse/probeparser"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"

@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
+	"github.com/Sheenam3/x-tracer-1/events"
 	"github.com/jroimartin/gocui"
 	"time"
 )

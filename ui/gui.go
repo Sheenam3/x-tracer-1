@@ -3,13 +3,13 @@ package ui
 import (
 	"context"
 	"fmt"
-	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
+	pb "github.com/Sheenam3/x-tracer-1/api"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"time"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/internal/agentmanager"
+	"github.com/Sheenam3/x-tracer-1/internal/agentmanager"
 
 	"github.com/jroimartin/gocui"
 )

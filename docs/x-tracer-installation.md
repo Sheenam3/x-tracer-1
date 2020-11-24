@@ -24,8 +24,8 @@ x-tracer needs to be installed on Master node of the cluster.
 
 You have to replace your $DOCKER_ID in Makefile
 ```
-go get github.com/ITRI-ICL-Peregrine/x-tracer
-cd $GOPATH/src/github.com/ITRI-ICL-Peregrine/x-tracer
+go get github.com/Sheenam3/x-tracer-1
+cd $GOPATH/src/github.com/Sheenam3/x-tracer-1
 make
 make release
 make publish
