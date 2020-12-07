@@ -200,12 +200,12 @@ b.attach_kprobe(event="blk_account_io_completion",
 # header
 if args.time:
     print("%-9s" % ("TIME"), end="")
-print("%-11s %-14s %-6s %-7s %-1s %-10s %-7s" % ("TIME(s)", "COMM", "PID",
+print("%-11s %-14s %-6s %-7s %-1s %-10s %-12s" % ("TIME(s)", "COMM", "PID",
     "DISK", "T", "SECTOR", "BYTES"), end="")
 if args.queue:
     print("%7s " % ("QUE(ms)"), end="")
 if args.netns:
-    print("%-8s" % ("NETNS"), end="")
+    print("%-12s" % ("NETNS"), end="")
 print("%7s" % "LAT(ms)")
 
 rwflg = ""
@@ -231,14 +231,14 @@ def print_event(cpu, data, size):
     if event.pid != 0:
         if args.time:
         	printb(b"%-9s" % strftime("%H:%M:%S").encode('ascii'), nl="")
-      	print("%-11.6f %-14.14s %-6s %-7s %-1s %-10s %-7s" % (
+      	print("%-11.6f %-14.14s %-6s %-7s %-1s %-10s %-12s" % (
         	delta / 1000000, event.name.decode('utf-8', 'replace'), event.pid,
         	event.disk_name.decode('utf-8', 'replace'), rwflg, event.sector,
         	event.len), end="")
     	if args.queue:
         	print("%7.2f " % (float(event.qdelta) / 1000000), end="")
     	if args.netns:
-		print("%-8d" % event.netns, end="")    
+		print("%-12d" % event.netns, end="")    
    	
     	print("%7.2f" % (float(event.delta) / 1000000))
 
