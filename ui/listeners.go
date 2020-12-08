@@ -101,7 +101,68 @@ func refreshSingleLogs(e events.Event) {
 
 }
 
+
+func refreshTCPLogs(e events.Event) {
+
+	if e, ok := e.(events.EmptyMessage); ok {
+
+		g.Update(func(g *gocui.Gui) error {
+
+			pn := e.Pn
+			if pn == "tcptracer"{
+				view, err := g.View("halfscreen")
+				if err != nil {
+					return err
+				}
+				view.Clear()
+
+				_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
+
+				g.SetViewOnTop("halfscren")
+				//g.SetCurrentView("halfscreen")
+
+				view.Autoscroll = true
+
+				return nil
+			}else if pn == "tcpconnect"{
+				view, err := g.View("tcplife")
+				if err != nil {
+					return err
+				}
+				view.Clear()
+
+				_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
+
+				g.SetViewOnTop("tcplife")
+				g.SetCurrentView("tcplife")
+
+				view.Autoscroll = true
+
+				return nil
+			}else{
+				view, err := g.View("tcplogs")
+				if err != nil {
+					return err
+				}
+				view.Clear()
+
+				_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
+
+				g.SetViewOnTop("tcplogs")
+				g.SetCurrentView("tcplogs")
+
+				view.Autoscroll = true
+
+				return nil
+			}
+		})
+	}
+
+}
+
 func SubscribeListeners() {
 	events.Subscribe(refreshIntegratedLogs, "logs:refreshinteg")
 	events.Subscribe(refreshSingleLogs, "logs:refreshsingle")
+	events.Subscribe(refreshTCPLogs, "logs:refretcp")
+
 }

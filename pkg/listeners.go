@@ -28,14 +28,17 @@ func receiveLog(e events.Event) {
 			os.Exit(1)
 		}
 
-		if Integ == true {
+		if Probe_Num == 1 {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else {
+		} else if Probe_Num == 4 {
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
+		} else {
+
+			events.PublishEvent("logs:refreshtcp", events.EmptyMessage{Pn: e.ProbeName})
 		}
 
 	}
@@ -64,14 +67,17 @@ func tcplifeLog(e events.Event) {
 			os.Exit(1)
 		}
 
-		if Integ == true {
+		if Probe_Num == 1 {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else {
+		} else if Probe_Num == 4 {
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
+		} else {
+
+			events.PublishEvent("logs:refreshtcp", events.EmptyMessage{Pn: e.ProbeName})
 		}
 
 	}
@@ -97,15 +103,15 @@ func execsnoopLog(e events.Event) {
 			os.Exit(1)
 		}
 
-		if Integ == true {
+		if Probe_Num == 1 {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else {
+		} else{
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
-		}
+		} 
 
 	}
 }
@@ -131,11 +137,11 @@ func biosnoopLog(e events.Event) {
 
 			os.Exit(1)
 		}
-		if Integ == true {
+		if Probe_Num == 1 {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else {
+		} else if Probe_Num == 4{
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
@@ -165,15 +171,17 @@ func cachestatLog(e events.Event) {
 
 			os.Exit(1)
 		}
-		if Integ == true {
+
+		if Probe_Num == 1 {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else {
+		} else if Probe_Num == 4 {
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
 		}
+
 
 	}
 }

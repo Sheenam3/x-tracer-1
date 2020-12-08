@@ -19,6 +19,7 @@ type StreamServer struct {
 
 var (
 	port string
+	Probe_Num int64
 )
 
 var bufLogs []string
@@ -43,7 +44,7 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 		if err != nil {
 			return err
 		}
-
+		Probe_Num = r.Pid
 		parse := strings.Fields(string(r.Log))
 
 		if r.ProbeName == "tcpconnect" {

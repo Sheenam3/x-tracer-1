@@ -79,6 +79,25 @@ func viewLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	return nil
 }
 
+
+func viewHalfscreenLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
+	if v, err := g.SetView("halfscreen", -1, lMaxY/2, lMaxX, lMaxY); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+
+		v.Title = " TCPTracer "
+		v.Autoscroll = true
+		v.Wrap = true
+
+		v.SetCursor(1, 3)
+
+	}
+
+	return nil
+
+}
+
 func viewTcpLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	if v, err := g.SetView("tcplogs", 1, 1, lMaxX/2, lMaxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
