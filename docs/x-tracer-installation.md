@@ -16,7 +16,7 @@
 |docker| v19.03.13
 | go    | v1.15.1
 |kubespray | v2.14.2
-|x-tracer-gocui| v1.0
+|x-tracer | v1.0
 
 x-tracer installation
 ---
