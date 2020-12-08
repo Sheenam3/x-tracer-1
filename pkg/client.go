@@ -142,6 +142,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 		go func() {
 
 			for val := range logbiosnoop {
+
 				err = c.startLogStream(client, &pb.Log{
 					Pid:       1234,
 					ProbeName: val.Probe,
