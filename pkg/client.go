@@ -68,7 +68,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 			for val := range logtcptracer {
 				log.Printf("logtcptracer")
 				err = c.startLogStream(client, &pb.Log{
-					Pid:       1234,
+					Pid:       123,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
