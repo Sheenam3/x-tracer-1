@@ -99,7 +99,7 @@ func viewHalfscreenLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 }
 
 func viewTcpLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("tcplogs", 1, 1, lMaxX/2, lMaxY/2); err != nil {
+	if v, err := g.SetView("tcplogs", -1, 1, lMaxX/2, lMaxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -133,7 +133,7 @@ func viewTcpLifeLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 }
 
 func viewExecSnoopLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("execsnoop", 1, lMaxY/2, lMaxX/2, lMaxY); err != nil {
+	if v, err := g.SetView("execsnoop", -1, lMaxY/2, lMaxX/2, lMaxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}

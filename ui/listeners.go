@@ -118,8 +118,8 @@ func refreshTCPLogs(e events.Event) {
 
 				_, _ = fmt.Fprint(viewtt, pkg.GetActiveLogs(pn))
 
-				g.SetViewOnTop("halfscren")
-				//g.SetCurrentView("halfscreen")
+				g.SetViewOnTop("halfscreen")
+				g.SetCurrentView("halfscreen")
 
 				viewtt.Autoscroll = true
 
@@ -163,6 +163,6 @@ func refreshTCPLogs(e events.Event) {
 func SubscribeListeners() {
 	events.Subscribe(refreshIntegratedLogs, "logs:refreshinteg")
 	events.Subscribe(refreshSingleLogs, "logs:refreshsingle")
-	events.Subscribe(refreshTCPLogs, "logs:refretcp")
+	events.Subscribe(refreshTCPLogs, "logs:refreshtcp")
 
 }
