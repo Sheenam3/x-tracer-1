@@ -110,48 +110,48 @@ func refreshTCPLogs(e events.Event) {
 
 			pn := e.Pn
 			if pn == "tcptracer"{
-				view, err := g.View("halfscreen")
+				viewtt, err := g.View("halfscreen")
 				if err != nil {
 					return err
 				}
-				view.Clear()
+				viewtt.Clear()
 
-				_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
+				_, _ = fmt.Fprint(viewtt, pkg.GetActiveLogs(pn))
 
 				g.SetViewOnTop("halfscren")
 				//g.SetCurrentView("halfscreen")
 
-				view.Autoscroll = true
+				viewtt.Autoscroll = true
 
 				return nil
 			}else if pn == "tcpconnect"{
-				view, err := g.View("tcplife")
+				viewtc, err := g.View("tcplife")
 				if err != nil {
 					return err
 				}
-				view.Clear()
+				viewtc.Clear()
 
-				_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
+				_, _ = fmt.Fprint(viewtc, pkg.GetActiveLogs(pn))
 
 				g.SetViewOnTop("tcplife")
 				g.SetCurrentView("tcplife")
 
-				view.Autoscroll = true
+				viewtc.Autoscroll = true
 
 				return nil
 			}else{
-				view, err := g.View("tcplogs")
+				viewtl, err := g.View("tcplogs")
 				if err != nil {
 					return err
 				}
-				view.Clear()
+				viewtl.Clear()
 
-				_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
+				_, _ = fmt.Fprint(viewtl, pkg.GetActiveLogs(pn))
 
 				g.SetViewOnTop("tcplogs")
 				g.SetCurrentView("tcplogs")
 
-				view.Autoscroll = true
+				viewtl.Autoscroll = true
 
 				return nil
 			}
