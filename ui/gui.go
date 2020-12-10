@@ -92,6 +92,7 @@ func InitGui() {
 func uiLayout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	viewLogs(g, maxX, maxY)
+	viewHalfscreenLogs(g, maxX, maxY)
 	viewTcpLogs(g, maxX, maxY)
 	viewTcpLifeLogs(g, maxX, maxY)
 	viewExecSnoopLogs(g, maxX, maxY)
@@ -201,6 +202,7 @@ func getSelectedPod(g *gocui.Gui) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	//g.SetCurrentView("pods")
 	l, err := getViewLine(g, v)
 	if err != nil {
 		return "", err
