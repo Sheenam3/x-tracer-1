@@ -133,12 +133,12 @@ func viewTcpLifeLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 }
 
 func viewExecSnoopLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("execsnoop", -1, lMaxY/2, lMaxX/2, lMaxY); err != nil {
+	if v, err := g.SetView("execsnoop", -1, lMaxY/2+1, lMaxX/2, lMaxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
 
-		v.Title = " ExecSnoop "
+		v.Title = " Snoop "
 		v.Autoscroll = true
 		v.Wrap = true
 
@@ -150,7 +150,7 @@ func viewExecSnoopLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 }
 
 func viewCacheStatLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("cachestat", lMaxX/2, lMaxY/2, lMaxX, lMaxY); err != nil {
+	if v, err := g.SetView("cachestat", lMaxX/2, lMaxY/2+1, lMaxX, lMaxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}

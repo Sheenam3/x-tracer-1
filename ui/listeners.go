@@ -41,7 +41,7 @@ func refreshIntegratedLogs(e events.Event) {
 				viewcs.Autoscroll = true
 
 				return nil
-			} else if pn == "execsnoop" {
+			} else if pn == "execsnoop" || pn == "biosnoop" {
 				viewes, err := g.View("execsnoop")
 				if err != nil {
 					return err
