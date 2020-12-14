@@ -74,7 +74,6 @@ func getPodContainersName(p string) []string {
 	return pc
 }
 
-
 func getPodContainersID(p string) []string {
 	cs := getClientSet()
 	var id []string

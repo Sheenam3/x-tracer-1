@@ -2,10 +2,10 @@ package ui
 
 import (
 	"fmt"
-	"strings"
-	"time"
 	"github.com/jroimartin/gocui"
 	"github.com/willf/pad"
+	"strings"
+	"time"
 )
 
 // View: Overlay
@@ -78,7 +78,6 @@ func viewLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	}
 	return nil
 }
-
 
 func viewHalfscreenLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	if v, err := g.SetView("halfscreen", -1, lMaxY/2, lMaxX, lMaxY); err != nil {
@@ -442,4 +441,3 @@ func getProbeNames() []string {
 	return pn
 
 }
-
