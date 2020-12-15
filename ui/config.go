@@ -59,4 +59,3 @@ func getConfig() config {
 
 	return c
 }
-

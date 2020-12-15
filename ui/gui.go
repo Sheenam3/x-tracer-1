@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/internal/agentmanager"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"time"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/internal/agentmanager"
 
 	"github.com/jroimartin/gocui"
 )
@@ -262,7 +262,6 @@ func showViewPodsLogs(g *gocui.Gui) (*gocui.Gui, string, io.Writer) {
 
 	}
 
-
 	return nil, "ok", nil
 }
 
@@ -365,7 +364,6 @@ func hideConfirmation(g *gocui.Gui) {
 func startAgent(g *gocui.Gui, p string, o io.Writer, probes string) error {
 	cs := getClientSet()
 	var containerId []string
-
 
 	containerId = getPodContainersID(p)
 

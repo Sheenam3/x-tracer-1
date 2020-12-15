@@ -387,7 +387,6 @@ func Init() {
 
 }
 
-
 func UpdateLogs(log TcpLog) error {
 
 	txn := db.Txn(true)
@@ -509,8 +508,6 @@ func GetLogs() map[int64]*Log {
 		panic(err)
 	}
 
-
-
 	for obj := it.Next(); obj != nil; obj = it.Next() {
 		p := obj.(*Log)
 		timestamp := p.Timestamp
@@ -532,8 +529,6 @@ func GetTcpLifeLogs() map[int64]*TcpLifeLog {
 	if err != nil {
 		panic(err)
 	}
-
-
 
 	for obj := it.Next(); obj != nil; obj = it.Next() {
 		p := obj.(*TcpLifeLog)
@@ -560,8 +555,6 @@ func GetExecSnoopLogs() map[int64]*ExecSnoopLog {
 		//os.Exit(1)
 	}
 
-
-
 	for obj := it.Next(); obj != nil; obj = it.Next() {
 		p := obj.(*ExecSnoopLog)
 		timestamp := p.TimeStamp
@@ -587,8 +580,6 @@ func GetBioSnoopLogs() map[int64]*BioSnoopLog {
 		panic(err)
 	}
 
-
-
 	for obj := it.Next(); obj != nil; obj = it.Next() {
 		p := obj.(*BioSnoopLog)
 		timestamp := p.TimeStamp
@@ -612,8 +603,6 @@ func GetCacheStatLogs() map[int64]*CacheStatLog {
 	if err != nil {
 		panic(err)
 	}
-
-
 
 	for obj := it.Next(); obj != nil; obj = it.Next() {
 		p := obj.(*CacheStatLog)
@@ -689,4 +678,3 @@ func DeleteESLogs() int {
 	return del
 
 }
-

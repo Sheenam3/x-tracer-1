@@ -107,11 +107,11 @@ func execsnoopLog(e events.Event) {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else{
+		} else {
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
-		} 
+		}
 
 	}
 }
@@ -141,7 +141,7 @@ func biosnoopLog(e events.Event) {
 
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
-		} else if Probe_Num == 4{
+		} else if Probe_Num == 4 {
 
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
@@ -181,7 +181,6 @@ func cachestatLog(e events.Event) {
 			events.PublishEvent("logs:refreshinteg", events.EmptyMessage{Pn: e.ProbeName})
 
 		}
-
 
 	}
 }

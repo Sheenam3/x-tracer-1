@@ -52,7 +52,6 @@ func refreshIntegratedLogs(e events.Event) {
 
 				g.SetViewOnTop("execsnoop")
 
-
 				viewes.Autoscroll = true
 
 				return nil
@@ -101,7 +100,6 @@ func refreshSingleLogs(e events.Event) {
 
 }
 
-
 func refreshTCPLogs(e events.Event) {
 
 	if e, ok := e.(events.EmptyMessage); ok {
@@ -109,7 +107,7 @@ func refreshTCPLogs(e events.Event) {
 		g.Update(func(g *gocui.Gui) error {
 
 			pn := e.Pn
-			if pn == "tcptracer"{
+			if pn == "tcptracer" {
 				viewtt, err := g.View("halfscreen")
 				if err != nil {
 					return err
@@ -124,7 +122,7 @@ func refreshTCPLogs(e events.Event) {
 				viewtt.Autoscroll = true
 
 				return nil
-			}else if pn == "tcpconnect"{
+			} else if pn == "tcpconnect" {
 				viewtc, err := g.View("tcplife")
 				if err != nil {
 					return err
@@ -139,7 +137,7 @@ func refreshTCPLogs(e events.Event) {
 				viewtc.Autoscroll = true
 
 				return nil
-			}else{
+			} else {
 				viewtl, err := g.View("tcplogs")
 				if err != nil {
 					return err

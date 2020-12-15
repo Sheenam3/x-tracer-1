@@ -18,4 +18,3 @@ func uiKey(g *gocui.Gui) error {
 
 	return nil
 }
-

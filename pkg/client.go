@@ -2,9 +2,9 @@ package pkg
 
 import (
 	"context"
+	"fmt"
 	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
 	pp "github.com/ITRI-ICL-Peregrine/x-tracer/parse/probeparser"
-	"fmt"
 	"google.golang.org/grpc"
 	"log"
 	"time"
@@ -16,7 +16,7 @@ type StreamClient struct {
 }
 
 var (
-	client pb.SentLogClient
+	client    pb.SentLogClient
 	probe_num int64
 )
 
@@ -87,7 +87,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 
 			for val := range logtcpaccept {
 				err = c.startLogStream(client, &pb.Log{
-					Pid:        probe_num,
+					Pid:       probe_num,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
@@ -105,7 +105,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 		go func() {
 			for val := range logtcplife {
 				err = c.startLogStream(client, &pb.Log{
-					Pid:        probe_num,
+					Pid:       probe_num,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
@@ -124,7 +124,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 
 			for val := range logexecsnoop {
 				err = c.startLogStream(client, &pb.Log{
-					Pid:        probe_num,
+					Pid:       probe_num,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
@@ -144,7 +144,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 			for val := range logbiosnoop {
 
 				err = c.startLogStream(client, &pb.Log{
-					Pid:        probe_num,
+					Pid:       probe_num,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
@@ -163,7 +163,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 
 			for val := range logcachetop {
 				err = c.startLogStream(client, &pb.Log{
-					Pid:        probe_num,
+					Pid:       probe_num,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
@@ -187,7 +187,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 			for val := range logtcpconnect {
 
 				err = c.startLogStream(client, &pb.Log{
-					Pid:        probe_num,
+					Pid:       probe_num,
 					ProbeName: val.Probe,
 					Log:       val.Fulllog,
 					TimeStamp: "TimeStamp",
@@ -250,7 +250,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 				for val := range logtcptracer {
 
 					err = c.startLogStream(client, &pb.Log{
-						Pid:        probe_num,
+						Pid:       probe_num,
 						ProbeName: val.Probe,
 						Log:       val.Fulllog,
 						TimeStamp: "TimeStamp",
@@ -273,7 +273,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 				for val := range logtcpconnect {
 
 					err = c.startLogStream(client, &pb.Log{
-						Pid:        probe_num,
+						Pid:       probe_num,
 						ProbeName: val.Probe,
 						Log:       val.Fulllog,
 						TimeStamp: "TimeStamp",
@@ -316,7 +316,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 				for val := range logtcplife {
 
 					err = c.startLogStream(client, &pb.Log{
-						Pid:        probe_num,
+						Pid:       probe_num,
 						ProbeName: val.Probe,
 						Log:       val.Fulllog,
 						TimeStamp: "TimeStamp",
@@ -338,7 +338,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 				for val := range logexecsnoop {
 					fmt.Println("execsnoop", val.Fulllog)
 					err = c.startLogStream(client, &pb.Log{
-						Pid:        probe_num,
+						Pid:       probe_num,
 						ProbeName: val.Probe,
 						Log:       val.Fulllog,
 						TimeStamp: "TimeStamp",

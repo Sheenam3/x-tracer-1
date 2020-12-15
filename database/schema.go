@@ -81,4 +81,3 @@ type CacheStatLog struct {
 	Read_hit  string
 	Write_hit string
 }
-

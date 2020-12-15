@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-
 var NAMESPACES_DISPLAYED bool = false
 
 // Global action: Quit
@@ -19,7 +18,6 @@ func actionGlobalQuit(g *gocui.Gui, v *gocui.View) error {
 
 	return gocui.ErrQuit
 }
-
 
 // View namespaces: Toggle display
 func actionGlobalToggleViewNamespaces(g *gocui.Gui, v *gocui.View) error {
@@ -84,7 +82,6 @@ func actionViewPodsDelete(g *gocui.Gui, v *gocui.View) error {
 
 	return nil
 }
-
 
 // View pod logs: Up
 func actionViewPodsLogsUp(g *gocui.Gui, v *gocui.View) error {
