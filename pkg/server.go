@@ -18,13 +18,15 @@ type StreamServer struct {
 }
 
 var (
-	port string
+	port      string
+	Probe_Num int64
 )
 
 var bufLogs []string
 var wbLogs []string
 var csbufLogs []string
 var cswbLogs []string
+
 //var bsbufLogs []string
 //var bswbLogs []string
 var esbufLogs []string
@@ -43,7 +45,7 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 		if err != nil {
 			return err
 		}
-
+		Probe_Num = r.Pid
 		parse := strings.Fields(string(r.Log))
 
 		if r.ProbeName == "tcpconnect" {
@@ -155,7 +157,6 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 	}
 }
 
-
 func SetPort(sport string) {
 	port = sport
 }
@@ -214,8 +215,6 @@ func GetActiveLogs(pn string) string {
 
 		}
 
-
-
 	} else if pn == "execsnoop" {
 		var esLogs []string
 		logs := database.GetExecSnoopLogs()
@@ -253,8 +252,6 @@ func GetActiveLogs(pn string) string {
 			return strings.Join(eswbLogs, "\n")
 
 		}
-
-
 
 	} else if pn == "biosnoop" {
 		var bsLogs []string
@@ -316,8 +313,6 @@ func GetActiveLogs(pn string) string {
 			return strings.Join(cswbLogs, "\n")
 
 		}
-
-
 
 	} else {
 		var tcpLogs []string

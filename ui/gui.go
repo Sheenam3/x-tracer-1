@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/internal/agentmanager"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"time"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/internal/agentmanager"
 
 	"github.com/jroimartin/gocui"
 )
@@ -92,6 +92,7 @@ func InitGui() {
 func uiLayout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	viewLogs(g, maxX, maxY)
+	viewHalfscreenLogs(g, maxX, maxY)
 	viewTcpLogs(g, maxX, maxY)
 	viewTcpLifeLogs(g, maxX, maxY)
 	viewExecSnoopLogs(g, maxX, maxY)
@@ -201,6 +202,7 @@ func getSelectedPod(g *gocui.Gui) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	//g.SetCurrentView("pods")
 	l, err := getViewLine(g, v)
 	if err != nil {
 		return "", err
@@ -259,7 +261,6 @@ func showViewPodsLogs(g *gocui.Gui) (*gocui.Gui, string, io.Writer) {
 		return g, p, lv
 
 	}
-
 
 	return nil, "ok", nil
 }
@@ -363,7 +364,6 @@ func hideConfirmation(g *gocui.Gui) {
 func startAgent(g *gocui.Gui, p string, o io.Writer, probes string) error {
 	cs := getClientSet()
 	var containerId []string
-
 
 	containerId = getPodContainersID(p)
 

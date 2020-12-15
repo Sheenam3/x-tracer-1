@@ -2,10 +2,10 @@ package ui
 
 import (
 	"fmt"
-	"strings"
-	"time"
 	"github.com/jroimartin/gocui"
 	"github.com/willf/pad"
+	"strings"
+	"time"
 )
 
 // View: Overlay
@@ -79,8 +79,26 @@ func viewLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	return nil
 }
 
+func viewHalfscreenLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
+	if v, err := g.SetView("halfscreen", -1, lMaxY/2, lMaxX, lMaxY); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+
+		v.Title = " TCPTracer "
+		v.Autoscroll = true
+		v.Wrap = true
+
+		v.SetCursor(1, 3)
+
+	}
+
+	return nil
+
+}
+
 func viewTcpLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("tcplogs", 1, 1, lMaxX/2, lMaxY/2); err != nil {
+	if v, err := g.SetView("tcplogs", -1, 1, lMaxX/2, lMaxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -114,12 +132,12 @@ func viewTcpLifeLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 }
 
 func viewExecSnoopLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("execsnoop", 1, lMaxY/2, lMaxX/2, lMaxY); err != nil {
+	if v, err := g.SetView("execsnoop", -1, lMaxY/2+1, lMaxX/2, lMaxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
 
-		v.Title = " ExecSnoop "
+		v.Title = " Snoop "
 		v.Autoscroll = true
 		v.Wrap = true
 
@@ -131,7 +149,7 @@ func viewExecSnoopLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
 }
 
 func viewCacheStatLogs(g *gocui.Gui, lMaxX int, lMaxY int) error {
-	if v, err := g.SetView("cachestat", lMaxX/2, lMaxY/2, lMaxX, lMaxY); err != nil {
+	if v, err := g.SetView("cachestat", lMaxX/2, lMaxY/2+1, lMaxX, lMaxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -423,4 +441,3 @@ func getProbeNames() []string {
 	return pn
 
 }
-

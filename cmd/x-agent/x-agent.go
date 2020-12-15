@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-
 func main() {
 
 	log.Println("Start api...")
@@ -28,7 +27,6 @@ func main() {
 	}
 
 	probeName := os.Getenv("tools")
-
 
 	Probe := strings.Split(probeName, ",")
 	cli, err := client.NewClientWithOpts(client.WithHost("unix:///var/run/docker.sock"), client.WithAPIVersionNegotiation())
