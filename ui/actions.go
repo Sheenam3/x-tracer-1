@@ -138,58 +138,80 @@ func actionViewProbesSelect(g *gocui.Gui, v *gocui.View) error {
 	if line == "uretprobe" {
 
 		err := getFilePath(g)
-		if err != nil {
-			return err
-		}
-		err = getFuncName(g)
-		if err != nil {
-			return err
-		}
+		return err
+		//errr := getFuncName(g)
+	}else {
+		G, p, lv := showViewPodsLogs(g)
+		displayConfirmation(g, line+" probe selected")
+		startAgent(G, p, lv, line, FILEPATH, FUNCNAME)
+		G.SetViewOnTop("logs")
+		G.SetCurrentView("logs")
 	}
-
-	G, p, lv := showViewPodsLogs(g)
-	displayConfirmation(g, line+" probe selected")
-	startAgent(G, p, lv, line, FILEPATH, FUNCNAME)
-	G.SetViewOnTop("logs")
-	G.SetCurrentView("logs")
 	return err
 }
 
-func actionUserInput(g *gocui.Gui, iv *gocui.View) error {
+func actionFilePathInput(g *gocui.Gui, iv *gocui.View) error {
 	var err error
 	// We want to read the view’s buffer from the beginning.
 	iv.Rewind()
 
 	// If there is text input then add the item,
 	// else go back to the input view.
-	switch iv.Name() {
-	case "filepath":
-		if iv.Buffer() != "" {
+	if iv.Buffer() != "" {
 			FILEPATH = iv.Buffer()
-		} else {
+	} else {
 			getFilePath(g)
 			return nil
-		}
-	case "funcname":
+	}
 
+	/*case "funcname":
+	
 		if iv.Buffer() != "" {
 			FUNCNAME = iv.Buffer()
 		} else {
 			getFuncName(g)
 			return nil
-		}
-	}
-	// Clear the input view
+		}*/
+		// Clear the input view
 	iv.Clear()
 	// No input, no cursor.
-	g.Cursor = false
+/*	g.Cursor = false
 	// !!!
 	// Must delete keybindings before the view, or fatal error !!!
 	// !!!
 	g.DeleteKeybindings(iv.Name())
 	if err = g.DeleteView(iv.Name()); err != nil {
 		return err
+	}*/
+	err = getFuncName(g)
+	return err
+
+}
+
+
+func actionFuncNameInput(g *gocui.Gui, iv *gocui.View) error {
+	var err error
+	// We want to read the view’s buffer from the beginning.
+	iv.Rewind()
+
+	// If there is text input then add the item,
+	// else go back to the input view.
+	if iv.Buffer() != "" {
+			FUNCNAME = iv.Buffer()
+	} else {
+			getFuncName(g)
+			return nil
 	}
+
+
+	
+	// Clear the input view
+	iv.Clear()
+	G, p, lv := showViewPodsLogs(g)
+	displayConfirmation(g, "uretprobe probe selected")
+	startAgent(G, p, lv, "uretprobe", FILEPATH, FUNCNAME)
+	G.SetViewOnTop("logs")
+	G.SetCurrentView("logs")
 
 	return err
 

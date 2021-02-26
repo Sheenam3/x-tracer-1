@@ -43,6 +43,27 @@ func receiveLog(e events.Event) {
 
 	}
 }
+func uretprobeLog(e events.Event) {
+	if e, ok := e.(events.UretProbeLogEvent); ok {
+
+		uret := events.UretProbeLogEvent{TimeStamp: e.TimeStamp,
+			ProbeName: e.ProbeName,
+			Pid:       e.Pid,
+			Retval:    e.Retval,
+		}
+		uretlogs := database.UretProbeLog(uret)
+		err := database.UpdateUretProbeLogs(uretlogs)
+		if err != nil {
+
+			os.Exit(1)
+		}
+
+		events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
+
+	}
+}
+
+
 
 func tcplifeLog(e events.Event) {
 	if e, ok := e.(events.TcpLifeLogEvent); ok {

@@ -47,8 +47,8 @@ var keys []Key = []Key{
 	{"probes", gocui.KeyArrowUp, actionViewNamespacesUp},
 	{"probes", gocui.KeyArrowDown, actionViewNamespacesDown},
 	{"probes", gocui.KeyEnter, actionViewProbesSelect},
-	{"filepath",  gocui.KeyEnter, actionUserInput},
-	{"funcname",  gocui.KeyEnter, actionUserInput},
+	{"filepath",  gocui.KeyEnter, actionFilePathInput},
+	{"funcname",  gocui.KeyEnter, actionFuncNameInput},
 }
 
 // Entry Point of the x-tracer
@@ -232,7 +232,6 @@ func showSelectProbe(g *gocui.Gui) error {
 
 //get uretprobe filepath from user
 func getFilePath(g *gocui.Gui) error {
-
 	g.SetViewOnTop("filepath")
 	g.SetCurrentView("filepath")
 
@@ -247,7 +246,7 @@ func getFuncName(g *gocui.Gui) error {
 	g.SetViewOnTop("funcname")
 	g.SetCurrentView("funcname")
 
-	return nil
+		return nil
 }
 
 

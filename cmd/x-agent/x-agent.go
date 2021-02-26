@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 	"time"
+
 )
 
 func main() {
@@ -28,6 +29,11 @@ func main() {
 
 	probeName := os.Getenv("tools")
 
+	filePath := os.Getenv("filePath")
+
+	funcName := os.Getenv("funcName")
+
+
 	Probe := strings.Split(probeName, ",")
 	cli, err := client.NewClientWithOpts(client.WithHost("unix:///var/run/docker.sock"), client.WithAPIVersionNegotiation())
 	if err != nil {
@@ -42,7 +48,7 @@ func main() {
 	log.Printf("Start new client")
 
 	testClient := pkg.New("6666", serverIp)
-	testClient.StartClient(Probe, topResult.Processes)
+	testClient.StartClient(Probe, topResult.Processes, filePath, funcName)
 
 	for {
 		fmt.Println("x-agent - Sleeping")

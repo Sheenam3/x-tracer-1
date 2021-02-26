@@ -444,8 +444,8 @@ func viewFilePath(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter File/Program Path"
-	name := "filepath"
-	if iv, err := g.SetView(name, minX, minY/2, maxX, maxY); err != nil {
+//	name := "filepath"
+	if iv, err := g.SetView("filepath", minX, minY/2, maxX, maxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -466,8 +466,8 @@ func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter Function Name"
-	name := "funcname"
-	if iv, err := g.SetView(name, minX, minY/2, maxX, maxY); err != nil {
+//	name := "funcname"
+	if iv, err := g.SetView("funcname", minX, minY/2, maxX, maxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}

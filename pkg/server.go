@@ -26,6 +26,8 @@ var bufLogs []string
 var wbLogs []string
 var csbufLogs []string
 var cswbLogs []string
+var upwbLogs []string
+var upbufLogs []string
 
 //var bsbufLogs []string
 //var bswbLogs []string
@@ -48,7 +50,12 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 		Probe_Num = r.Pid
 		parse := strings.Fields(string(r.Log))
 
-		if r.ProbeName == "tcpconnect" {
+	       if r.ProbeName == "uretprobe" {
+			events.PublishEvent("log:receive", events.ReceiveLogEvent{ProbeName: r.ProbeName,
+				Pid: parse[0],
+				Retval: parse[1],
+			})
+	       } else if r.ProbeName == "tcpconnect" {
 			events.PublishEvent("log:receive", events.ReceiveLogEvent{ProbeName: r.ProbeName,
 				Sys_Time: parse[0],
 				T:        parse[1],
@@ -178,6 +185,44 @@ func GetActiveLogs(pn string) string {
 
 	var keys []int64
 
+	if pn == "uretprobe" {
+		var uretLogs []string
+		logs := database.GetUretProbeLogs()
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+		for k := range logs {
+			keys = append(keys, k)
+
+		}
+
+		sortkeys.Int64s(keys)
+
+		for _, log := range keys {
+			val := logs[log]
+			uretLogs = append(uretLogs, fmt.Sprintf("{PID:%s | RETVAL:%s\n", val.Pid, val.Retval))
+
+		}
+
+		for i := range uretLogs {
+			upbufLogs = append(upbufLogs, uretLogs[i])
+		}
+		if len(upbufLogs) >= 9 {
+
+			upwbLogs = upbufLogs
+			upbufLogs = nil
+			del := database.DeleteUretLogs()
+			return strings.Join(upwbLogs, "\n")
+			fmt.Println(del)
+		} else {
+
+			return strings.Join(upwbLogs, "\n")
+
+		}
+
+	} 
 	if pn == "tcplife" {
 		var tlLogs []string
 		logs := database.GetTcpLifeLogs()

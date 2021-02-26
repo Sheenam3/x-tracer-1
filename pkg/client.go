@@ -26,7 +26,7 @@ func New(servicePort string, masterIp string) *StreamClient {
 		masterIp}
 }
 
-func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
+func (c *StreamClient) StartClient(probename []string, pidList [][]string, filepath string, funcname string) {
 
 	connect, err := grpc.Dial(c.ip+":"+c.port, grpc.WithInsecure())
 	if err != nil {
@@ -241,6 +241,29 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string) {
 	} else {
 		probe_num = 1
 		switch probename[0] {
+		case "uretprobe":
+
+			loguretprobe := make(chan pp.Log, 1)
+			go pp.RunUretprobe(probename[0], loguretprobe, pidList[0][0], filepath, funcname)
+			go func() {
+
+				for val := range loguretprobe {
+
+					err = c.startLogStream(client, &pb.Log{
+						Pid:       probe_num,
+						ProbeName: val.Probe,
+						Log:       val.Fulllog,
+						TimeStamp: "TimeStamp",
+					})
+					if err != nil {
+						log.Fatalf("startLogStream fail.err: %v", err)
+					}
+
+				}
+
+			}()
+
+
 		case "tcptracer":
 
 			logtcptracer := make(chan pp.Log, 1)

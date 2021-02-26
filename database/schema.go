@@ -1,7 +1,7 @@
 package database
 
 type Log struct {
-	Timestamp int64
+	TimeStamp int64
 	ProbeName string
 	Sys_Time  string
 	T         string
@@ -80,4 +80,10 @@ type CacheStatLog struct {
 	Dirties   string
 	Read_hit  string
 	Write_hit string
+}
+
+type UretProbeLog struct {
+	TimeStamp int64
+	Pid       string
+	Retval    string
 }

@@ -7,6 +7,7 @@ import (
 )
 
 var (
+	up   *memdb.MemDB
 	db   *memdb.MemDB
 	tldb *memdb.MemDB
 	es   *memdb.MemDB
@@ -16,6 +17,33 @@ var (
 
 func Init() {
 	var err error
+	schemaup := &memdb.DBSchema{
+		Tables: map[string]*memdb.TableSchema{
+			"uretprobe": {
+				Name: "uretprobe",
+				Indexes: map[string]*memdb.IndexSchema{
+					"id": {
+						Name:    "id",
+						Unique:  true,
+						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+					},
+					"pid": {
+						Name:    "pid",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Pid"},
+					},
+
+					"retval": {
+						Name:    "retvalue",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Retval"},
+					},
+				},
+			},
+		},
+	}
+
+
 	schema := &memdb.DBSchema{
 		Tables: map[string]*memdb.TableSchema{
 			"tcpconnect": {
@@ -355,6 +383,13 @@ func Init() {
 		},
 	}
 
+
+	//Create a new data base for uretprobe
+	up, err = memdb.NewMemDB(schemaup)
+	if err != nil {
+		panic(err)
+	}
+
 	//Create a new data base for tcplogs
 	db, err = memdb.NewMemDB(schema)
 	if err != nil {
@@ -386,6 +421,28 @@ func Init() {
 	}
 
 }
+
+func UpdateUretProbeLogs(log UretProbeLog) error {
+
+	txn := db.Txn(true)
+	timestamp := time.Now().UnixNano()
+	logs := []*UretProbeLog{
+
+		{timestamp,log.Pid, log.Retval},
+	}
+
+	for _, p := range logs {
+		if err := txn.Insert("uretprobe", p); err != nil {
+			return err
+		}
+	}
+
+	txn.Commit()
+
+	return nil
+
+}
+
 
 func UpdateLogs(log TcpLog) error {
 
@@ -496,6 +553,7 @@ func UpdateCsLogs(log CacheStatLog) error {
 
 }
 
+
 func GetLogs() map[int64]*Log {
 
 	txn := db.Txn(false)
@@ -510,7 +568,29 @@ func GetLogs() map[int64]*Log {
 
 	for obj := it.Next(); obj != nil; obj = it.Next() {
 		p := obj.(*Log)
-		timestamp := p.Timestamp
+		timestamp := p.TimeStamp
+		logs[timestamp] = p
+
+	}
+
+	return logs
+}
+
+func GetUretProbeLogs() map[int64]*UretProbeLog {
+
+	txn := up.Txn(false)
+	defer txn.Abort()
+
+	logs := make(map[int64]*UretProbeLog)
+
+	it, err := txn.Get("uretprobe", "id")
+	if err != nil {
+		panic(err)
+	}
+
+	for obj := it.Next(); obj != nil; obj = it.Next() {
+		p := obj.(*UretProbeLog)
+		timestamp := p.TimeStamp
 		logs[timestamp] = p
 
 	}
@@ -612,6 +692,22 @@ func GetCacheStatLogs() map[int64]*CacheStatLog {
 	}
 
 	return logs
+}
+
+func DeleteUretLogs() int {
+
+	txn := up.Txn(true)
+
+	del, err := txn.DeleteAll("uretprobe", "id")
+	if err != nil {
+		panic(err)
+		return 0
+	}
+
+	txn.Commit()
+
+	return del
+
 }
 
 func DeleteTcpLogs() int {

@@ -33,6 +33,39 @@ func GetNS(pid string) string {
 	return sep[0]
 
 }
+
+func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+
+
+
+	cmd := exec.Command("bpftrace", "-p " + pid + "-e ", "'uretprobe:" + filepath + ":" + funcname + "{ printf(pid, retval);}")
+	cmd.Dir = "/usr/share/bcc/tools/ebpf"
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	cmd.Start()
+	buf := bufio.NewReader(stdout)
+
+	for {
+
+		line, _, _ := buf.ReadLine()
+		parsedLine := strings.Fields(string(line))
+
+		if parsedLine[0] != "Attaching 1 Probe..." {
+			ppid, err := strconv.ParseInt(parsedLine[0], 10, 64)
+				if err != nil {
+					println("Uretprobe PID Error")
+				}
+
+				timest := 0.00
+				n := Log{Fulllog: string(line), Pid: ppid, Time: timest, Probe: tool}
+				loguretprobe <- n
+
+		}
+	}
+}
+
 func RunTcptracer(tool string, logtcptracer chan Log, pid string) {
 
 	sep := GetNS(pid)

@@ -71,3 +71,14 @@ type CacheStatLogEvent struct {
 	Read_hit  string
 	Write_hit string
 }
+
+
+type UretProbeLogEvent struct {
+
+	TimeStamp int64
+	ProbeName string
+	Pid	  string
+	Retval	  string
+
+
+}
