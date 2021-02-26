@@ -427,7 +427,7 @@ func viewProbeNames(g *gocui.Gui) {
 
 		}
 
-		setViewCursorToLine(g, v, probes, "tcptracer")
+		setViewCursorToLine(g, v, probes, "uretprobe")
 
 		return nil
 
@@ -435,9 +435,54 @@ func viewProbeNames(g *gocui.Gui) {
 
 }
 
+func viewFilePath(g *gocui.Gui, lMaxX int, lMaxY int ) error {
+
+	w := lMaxX / 2
+	h := lMaxY / 4
+	minX := (lMaxX / 2) - (w / 2)
+	minY := (lMaxY / 2) - (h / 2)
+	maxX := minX + w
+	maxY := minY + h
+	title := "Enter File/Program Path"
+	name := "filepath"
+	if iv, err := g.SetView(name, minX, minY/2, maxX, maxY); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+		iv.Title = title
+		iv.Editable = true
+		g.Cursor = true
+	}
+	return nil
+}
+
+
+func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
+
+	w := lMaxX / 2
+	h := lMaxY / 4
+	minX := (lMaxX / 2) - (w / 2)
+	minY := (lMaxY / 2) - (h / 2)
+	maxX := minX + w
+	maxY := minY + h
+	title := "Enter Function Name"
+	name := "funcname"
+	if iv, err := g.SetView(name, minX, minY/2, maxX, maxY); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+
+		iv.Title = title
+		iv.Editable = true
+		g.Cursor = true
+
+	}
+	return nil
+}
+
 func getProbeNames() []string {
 
-	pn := []string{"tcptracer", "tcpconnect", "tcpaccept", "tcplife", "execsnoop", "biosnoop", "cachestat", "All TCP Probes", "All Probes"}
+	pn := []string{"uretprobe","tcptracer", "tcpconnect", "tcpaccept", "tcplife", "execsnoop", "biosnoop", "cachestat", "All TCP Probes", "All Probes"}
 	return pn
 
 }

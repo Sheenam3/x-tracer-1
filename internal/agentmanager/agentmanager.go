@@ -16,6 +16,8 @@ type agent struct {
 	masterIp          string
 	clientSet         *kubernetes.Clientset
 	probes            string
+	filepath	  string
+	funcname	  string
 }
 
 var podObj *v1.Pod
@@ -23,12 +25,12 @@ var svcObj *v1.Service
 
 var C chan bool
 
-func New(containerId string, nodeId string, masterIp string, clientSet *kubernetes.Clientset, probes string) *agent {
+func New(containerId string, nodeId string, masterIp string, clientSet *kubernetes.Clientset, probes string, filepath string, funcname string) *agent {
 	return &agent{
 		containerId,
 		nodeId,
 		masterIp,
-		clientSet, probes}
+		clientSet, probes, filepath, funcname}
 }
 
 func (a *agent) getAgentService() *v1.Service {
@@ -110,6 +112,15 @@ func (a *agent) getAgentPodObject() *v1.Pod {
 						{
 							Name:  "masterIp",
 							Value: a.masterIp,
+						},
+						{
+							Name:  "filePath",
+							Value: a.filepath,
+						},
+
+						{
+							Name:  "funcName",
+							Value: a.funcname,
 						},
 					},
 					VolumeMounts: []v1.VolumeMount{

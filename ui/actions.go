@@ -131,15 +131,68 @@ func actionViewNamespacesSelect(g *gocui.Gui, v *gocui.View) error {
 
 // Probes:  Choose
 func actionViewProbesSelect(g *gocui.Gui, v *gocui.View) error {
+
 	line, err := getViewLine(g, v)
 	LOG_MOD = "probe"
 
+	if line == "uretprobe" {
+
+		err := getFilePath(g)
+		if err != nil {
+			return err
+		}
+		err = getFuncName(g)
+		if err != nil {
+			return err
+		}
+	}
+
 	G, p, lv := showViewPodsLogs(g)
 	displayConfirmation(g, line+" probe selected")
-	startAgent(G, p, lv, line)
+	startAgent(G, p, lv, line, FILEPATH, FUNCNAME)
 	G.SetViewOnTop("logs")
 	G.SetCurrentView("logs")
 	return err
+}
+
+func actionUserInput(g *gocui.Gui, iv *gocui.View) error {
+	var err error
+	// We want to read the view’s buffer from the beginning.
+	iv.Rewind()
+
+	// If there is text input then add the item,
+	// else go back to the input view.
+	switch iv.Name() {
+	case "filepath":
+		if iv.Buffer() != "" {
+			FILEPATH = iv.Buffer()
+		} else {
+			getFilePath(g)
+			return nil
+		}
+	case "funcname":
+
+		if iv.Buffer() != "" {
+			FUNCNAME = iv.Buffer()
+		} else {
+			getFuncName(g)
+			return nil
+		}
+	}
+	// Clear the input view
+	iv.Clear()
+	// No input, no cursor.
+	g.Cursor = false
+	// !!!
+	// Must delete keybindings before the view, or fatal error !!!
+	// !!!
+	g.DeleteKeybindings(iv.Name())
+	if err = g.DeleteView(iv.Name()); err != nil {
+		return err
+	}
+
+	return err
+
 }
 
 func actionViewProbesList(g *gocui.Gui, v *gocui.View) error {
