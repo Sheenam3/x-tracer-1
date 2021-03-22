@@ -82,3 +82,20 @@ type UretProbeLogEvent struct {
 
 
 }
+
+type UretProbeCountLogEvent struct {
+
+	TimeStamp int64
+	FuncName  string
+	Pid	  string
+	Count	  string
+
+
+}
+type UretProbeFreqLogEvent struct {
+
+	TimeStamp int64
+	Time	  string
+
+
+}

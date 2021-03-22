@@ -88,3 +88,15 @@ type UretProbeLog struct {
 	Pid       string
 	Retval    string
 }
+
+type UretProbeCountLog struct {
+	TimeStamp int64
+	FuncName  string
+	Pid       string
+	Count     string
+}
+
+type UretProbeFreqLog struct {
+	TimeStamp int64
+	Time    string
+}

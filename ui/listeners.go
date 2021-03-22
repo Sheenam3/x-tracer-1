@@ -81,10 +81,12 @@ func refreshSingleLogs(e events.Event) {
 		g.Update(func(g *gocui.Gui) error {
 
 			pn := e.Pn
-			view, err := g.View("logs")
-			if err != nil {
+			if pn == "Retval" || pn == "Count" || pn == "Frequency"{
+
+				view, err := g.View("logs")
+				if err != nil {
 				return err
-			}
+				}	
 			view.Clear()
 
 			_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))
@@ -158,9 +160,70 @@ func refreshTCPLogs(e events.Event) {
 
 }
 
+
+func refreshUretLogs(e events.Event) {
+
+	if e, ok := e.(events.EmptyMessage); ok {
+
+		g.Update(func(g *gocui.Gui) error {
+
+			pn := e.Pn
+			if pn == "Retval" {
+				viewtt, err := g.View("halfscreen")
+				if err != nil {
+					return err
+				}
+				viewtt.Clear()
+
+				_, _ = fmt.Fprint(viewtt, pkg.GetActiveLogs(pn))
+
+				g.SetViewOnTop("halfscreen")
+				g.SetCurrentView("halfscreen")
+
+				viewtt.Autoscroll = true
+
+				return nil
+			} else if pn == "Count" {
+				viewtc, err := g.View("tcplife")
+				if err != nil {
+					return err
+				}
+				viewtc.Clear()
+
+				_, _ = fmt.Fprint(viewtc, pkg.GetActiveLogs(pn))
+
+				g.SetViewOnTop("tcplife")
+				g.SetCurrentView("tcplife")
+
+				viewtc.Autoscroll = true
+
+				return nil
+			} else {
+				viewtl, err := g.View("tcplogs")
+				if err != nil {
+					return err
+				}
+				viewtl.Clear()
+
+				_, _ = fmt.Fprint(viewtl, pkg.GetActiveLogs(pn))
+
+				g.SetViewOnTop("tcplogs")
+				g.SetCurrentView("tcplogs")
+
+				viewtl.Autoscroll = true
+
+				return nil
+			}
+		})
+	}
+
+}
+
+
 func SubscribeListeners() {
 	events.Subscribe(refreshIntegratedLogs, "logs:refreshinteg")
 	events.Subscribe(refreshSingleLogs, "logs:refreshsingle")
 	events.Subscribe(refreshTCPLogs, "logs:refreshtcp")
+	events.Subscribe(refreshUretLogs, "logs:refreshuret")
 
 }
