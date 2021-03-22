@@ -34,12 +34,12 @@ func GetNS(pid string) string {
 
 }
 
-func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
 
 
-
-	cmd := exec.Command("bpftrace", "-p " + pid + "-e ", "'uretprobe:" + filepath + ":" + funcname + "{ printf(pid, retval);}")
-	cmd.Dir = "/usr/share/bcc/tools/ebpf"
+	command := `uprobe:` + filepath + `:` + funcname + `{ @start = nsecs; }` + `uretprobe:` + filepath + `:` + funcname + `/@start/ { @time = ((nsecs - @start)/1000);  print(@time); delete(@start); }`
+	cmd := exec.Command("bpftrace", "-p", pid , "-e ", command)
+	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
@@ -50,19 +50,85 @@ func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath strin
 	for {
 
 		line, _, _ := buf.ReadLine()
-		parsedLine := strings.Fields(string(line))
+		/*parsedLine := strings.Fields(string(line))
 
 		if parsedLine[0] != "Attaching 1 Probe..." {
 			ppid, err := strconv.ParseInt(parsedLine[0], 10, 64)
 				if err != nil {
 					println("Uretprobe PID Error")
-				}
+				}*/
 
 				timest := 0.00
-				n := Log{Fulllog: string(line), Pid: ppid, Time: timest, Probe: tool}
+				n := Log{Fulllog: string(line), Pid: 1234, Time: timest, Probe: tool}
 				loguretprobe <- n
 
-		}
+		//}
+	}
+}
+
+
+func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+
+
+	command  := `uretprobe:` + filepath + `:` + funcname + `{ @[comm,pid,retval] = count(); }` +`interval:s:1` + `{ time("%H:%M:%S"); print(@); clear(@); }`
+	cmd := exec.Command("bpftrace", "-p", pid , "-e ", command)
+	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	cmd.Start()
+	buf := bufio.NewReader(stdout)
+
+	for {
+
+		line, _, _ := buf.ReadLine()
+		/*parsedLine := strings.Fields(string(line))
+
+		if parsedLine[0] != "Attaching 1 Probe..." {
+			ppid, err := strconv.ParseInt(parsedLine[0], 10, 64)
+				if err != nil {
+					println("Uretprobe PID Error")
+				}*/
+
+				timest := 0.00
+				n := Log{Fulllog: string(line), Pid: 1234, Time: timest, Probe: tool}
+				loguretprobe <- n
+
+		//}
+	}
+}
+
+
+func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+
+
+	command := `uretprobe:` + filepath + `:` + funcname + `{ printf("Pid:%d    RetValue:%d\n", pid, retval); }`
+	cmd := exec.Command("bpftrace", "-p", pid , "-e ", command)
+	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	cmd.Start()
+	buf := bufio.NewReader(stdout)
+
+	for {
+
+		line, _, _ := buf.ReadLine()
+		/*parsedLine := strings.Fields(string(line))
+
+		if parsedLine[0] != "Attaching 1 Probe..." {
+			ppid, err := strconv.ParseInt(parsedLine[0], 10, 64)
+				if err != nil {
+					println("Uretprobe PID Error")
+				}*/
+
+				timest := 0.00
+				n := Log{Fulllog: string(line), Pid: 1234, Time: timest, Probe: tool}
+				loguretprobe <- n
+
+		//}
 	}
 }
 

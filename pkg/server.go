@@ -51,7 +51,7 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 		parse := strings.Fields(string(r.Log))
 
 	       if r.ProbeName == "uretprobe" {
-			events.PublishEvent("log:receive", events.ReceiveLogEvent{ProbeName: r.ProbeName,
+			events.PublishEvent("log:uret", events.UretProbeLogEvent{ProbeName: r.ProbeName,
 				Pid: parse[0],
 				Retval: parse[1],
 			})

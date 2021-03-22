@@ -137,18 +137,57 @@ func actionViewProbesSelect(g *gocui.Gui, v *gocui.View) error {
 
 	if line == "uretprobe" {
 
-		err := getFilePath(g)
+		err := getContPid(g)
 		return err
 		//errr := getFuncName(g)
 	}else {
 		G, p, lv := showViewPodsLogs(g)
 		displayConfirmation(g, line+" probe selected")
-		startAgent(G, p, lv, line, FILEPATH, FUNCNAME)
+		startAgent(G, p, lv, line, CONTPID ,FILEPATH, FUNCNAME)
 		G.SetViewOnTop("logs")
 		G.SetCurrentView("logs")
 	}
 	return err
 }
+
+func actionContPidInput(g *gocui.Gui, iv *gocui.View) error {
+	var err error
+	// We want to read the view’s buffer from the beginning.
+	iv.Rewind()
+
+	// If there is text input then add the item,
+	// else go back to the input view.
+	if iv.Buffer() != "" {
+			CONTPID = iv.Buffer()
+	} else {
+			getContPid(g)
+			return nil
+	}
+
+	/*case "funcname":
+	
+		if iv.Buffer() != "" {
+			FUNCNAME = iv.Buffer()
+		} else {
+			getFuncName(g)
+			return nil
+		}*/
+		// Clear the input view
+	iv.Clear()
+	// No input, no cursor.
+/*	g.Cursor = false
+	// !!!
+	// Must delete keybindings before the view, or fatal error !!!
+	// !!!
+	g.DeleteKeybindings(iv.Name())
+	if err = g.DeleteView(iv.Name()); err != nil {
+		return err
+	}*/
+	err = getFilePath(g)
+	return err
+
+}
+
 
 func actionFilePathInput(g *gocui.Gui, iv *gocui.View) error {
 	var err error
@@ -190,7 +229,7 @@ func actionFilePathInput(g *gocui.Gui, iv *gocui.View) error {
 
 
 func actionFuncNameInput(g *gocui.Gui, iv *gocui.View) error {
-	var err error
+	//var err error
 	// We want to read the view’s buffer from the beginning.
 	iv.Rewind()
 
@@ -204,17 +243,32 @@ func actionFuncNameInput(g *gocui.Gui, iv *gocui.View) error {
 	}
 
 
-	
+
 	// Clear the input view
 	iv.Clear()
-	G, p, lv := showViewPodsLogs(g)
+	/*G, p, lv := showViewPodsLogs(g)
 	displayConfirmation(g, "uretprobe probe selected")
 	startAgent(G, p, lv, "uretprobe", FILEPATH, FUNCNAME)
+	G.SetViewOnTop("logs")
+	G.SetCurrentView("logs")*/
+	errr := showSelectUserFuncType(g)
+	changeStatusContext(g, "SL")
+        //time.Sleep(10 * time.Second)
+	return errr
+
+}
+
+// Uretprobe choose type
+func actionViewUProbeTypeSelect(g *gocui.Gui, v *gocui.View) error {
+
+	line, err := getViewLine(g, v)
+	G, p, lv := showViewPodsLogs(g)
+	displayConfirmation(g, line+" probe selected")
+	startAgent(G, p, lv, line, CONTPID, FILEPATH, FUNCNAME)
 	G.SetViewOnTop("logs")
 	G.SetCurrentView("logs")
 
 	return err
-
 }
 
 func actionViewProbesList(g *gocui.Gui, v *gocui.View) error {

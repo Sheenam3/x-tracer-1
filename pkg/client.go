@@ -26,7 +26,7 @@ func New(servicePort string, masterIp string) *StreamClient {
 		masterIp}
 }
 
-func (c *StreamClient) StartClient(probename []string, pidList [][]string, filepath string, funcname string) {
+func (c *StreamClient) StartClient(probename []string, pidList [][]string, contpid string, filepath string, funcname string) {
 
 	connect, err := grpc.Dial(c.ip+":"+c.port, grpc.WithInsecure())
 	if err != nil {
@@ -37,7 +37,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, filep
 
 	client = pb.NewSentLogClient(connect)
 
-	if len(probename) > 3 {
+	if len(probename) > 4 {
 
 		probe_num = 4
 		logtcpconnect := make(chan pp.Log, 1)
@@ -238,16 +238,124 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, filep
 
 		}()
 
-	} else {
-		probe_num = 1
-		switch probename[0] {
-		case "uretprobe":
-
+	}else if len(probename) == 4 {
 			loguretprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobe(probename[0], loguretprobe, pidList[0][0], filepath, funcname)
+			go pp.RunUretprobe(probename[0], loguretprobe, contpid, filepath, funcname)
 			go func() {
 
 				for val := range loguretprobe {
+
+					err = c.startLogStream(client, &pb.Log{
+						Pid:       probe_num,
+						ProbeName: val.Probe,
+						Log:       val.Fulllog,
+						TimeStamp: "TimeStamp",
+					})
+					if err != nil {
+						log.Fatalf("startLogStream fail.err: %v", err)
+					}
+
+				}
+
+			}()
+
+		
+
+			loguretcountprobe := make(chan pp.Log, 1)
+			go pp.RunUretprobeCount(probename[1], loguretcountprobe, contpid, filepath, funcname)
+			go func() {
+
+				for val := range loguretcountprobe {
+
+					err = c.startLogStream(client, &pb.Log{
+						Pid:       probe_num,
+						ProbeName: val.Probe,
+						Log:       val.Fulllog,
+						TimeStamp: "TimeStamp",
+					})
+					if err != nil {
+						log.Fatalf("startLogStream fail.err: %v", err)
+					}
+
+				}
+
+			}()
+
+		
+			loguretfreqprobe := make(chan pp.Log, 1)
+			go pp.RunUretprobeFreq(probename[2], loguretfreqprobe, contpid, filepath, funcname)
+			go func() {
+
+				for val := range loguretfreqprobe {
+
+					err = c.startLogStream(client, &pb.Log{
+						Pid:       probe_num,
+						ProbeName: val.Probe,
+						Log:       val.Fulllog,
+						TimeStamp: "TimeStamp",
+					})
+					if err != nil {
+						log.Fatalf("startLogStream fail.err: %v", err)
+					}
+
+				}
+
+			}()
+
+	}else{
+		probe_num = 1
+		switch probename[0] {
+		case "Retval":
+
+			loguretprobe := make(chan pp.Log, 1)
+			go pp.RunUretprobe(probename[0], loguretprobe, contpid, filepath, funcname)
+			go func() {
+
+				for val := range loguretprobe {
+
+					err = c.startLogStream(client, &pb.Log{
+						Pid:       probe_num,
+						ProbeName: val.Probe,
+						Log:       val.Fulllog,
+						TimeStamp: "TimeStamp",
+					})
+					if err != nil {
+						log.Fatalf("startLogStream fail.err: %v", err)
+					}
+
+				}
+
+			}()
+
+		case "Count":
+
+			loguretcountprobe := make(chan pp.Log, 1)
+			go pp.RunUretprobeCount(probename[0], loguretcountprobe, contpid, filepath, funcname)
+			go func() {
+
+				for val := range loguretcountprobe {
+
+					err = c.startLogStream(client, &pb.Log{
+						Pid:       probe_num,
+						ProbeName: val.Probe,
+						Log:       val.Fulllog,
+						TimeStamp: "TimeStamp",
+					})
+					if err != nil {
+						log.Fatalf("startLogStream fail.err: %v", err)
+					}
+
+				}
+
+			}()
+
+		case "Frequency":
+
+			loguretfreqprobe := make(chan pp.Log, 1)
+			go pp.RunUretprobeFreq(probename[0], loguretfreqprobe, contpid, filepath, funcname)
+			go func() {
+
+				for val := range loguretfreqprobe {
 
 					err = c.startLogStream(client, &pb.Log{
 						Pid:       probe_num,

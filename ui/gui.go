@@ -29,6 +29,7 @@ var LOG_MOD string = "pod"
 var NAMESPACE string = "default"
 var FILEPATH string = "empty"
 var FUNCNAME string = "empty"
+var CONTPID string = "empty"
 
 // Configure globale keys
 var keys []Key = []Key{
@@ -47,8 +48,12 @@ var keys []Key = []Key{
 	{"probes", gocui.KeyArrowUp, actionViewNamespacesUp},
 	{"probes", gocui.KeyArrowDown, actionViewNamespacesDown},
 	{"probes", gocui.KeyEnter, actionViewProbesSelect},
+	{"contpid",  gocui.KeyEnter, actionContPidInput},
 	{"filepath",  gocui.KeyEnter, actionFilePathInput},
 	{"funcname",  gocui.KeyEnter, actionFuncNameInput},
+	{"uretprobe", gocui.KeyArrowUp, actionViewNamespacesUp},
+	{"uretprobe", gocui.KeyArrowDown, actionViewNamespacesDown},
+	{"uretprobe", gocui.KeyEnter, actionViewUProbeTypeSelect},
 }
 
 // Entry Point of the x-tracer
@@ -109,6 +114,8 @@ func uiLayout(g *gocui.Gui) error {
 	viewStatusBar(g, maxX, maxY)
 	viewFilePath(g, maxX, maxY)
 	viewFuncName(g, maxX, maxY)
+	viewContPid(g, maxX, maxY)
+	viewUretProbe(g, maxX, maxY)
 	return nil
 }
 
@@ -217,6 +224,7 @@ func getSelectedPod(g *gocui.Gui) (string, error) {
 	return p, nil
 }
 
+
 func showSelectProbe(g *gocui.Gui) error {
 
 	switch LOG_MOD {
@@ -230,8 +238,30 @@ func showSelectProbe(g *gocui.Gui) error {
 }
 
 
+func showSelectUserFuncType(g *gocui.Gui) error {
+
+		//Choose what you want from uretprobe tool
+		g.SetViewOnTop("uretprobe")
+		g.SetCurrentView("uretprobe")
+		changeStatusContext(g, "SE")
+
+	return nil
+}
+
+
+//get contaner pid from user
+func getContPid(g *gocui.Gui) error {
+
+	g.SetViewOnTop("contpid")
+	g.SetCurrentView("contpid")
+
+	return nil
+}
+
+
 //get uretprobe filepath from user
 func getFilePath(g *gocui.Gui) error {
+
 	g.SetViewOnTop("filepath")
 	g.SetCurrentView("filepath")
 
@@ -388,7 +418,7 @@ func hideConfirmation(g *gocui.Gui) {
 	g.DeleteView("confirmation")
 }
 
-func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, filepath string, funcname string) error {
+func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, uretype string ,contpid string, filepath string, funcname string) error {
 	cs := getClientSet()
 	var containerId []string
 
@@ -402,7 +432,7 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, filepath str
 
 		pn := getProbeNames()
 		allpn := strings.Join(pn, ",")
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, allpn, filepath, funcname)
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, allpn, contpid, filepath, funcname)
 
 		//Start x-agent Pod
 		fmt.Fprintln(o, "Starting x-agent Pod...")
@@ -417,7 +447,7 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, filepath str
 	} else if probes == "All TCP Probes" {
 		pn := getTcpProbeNames()
 		tcppn := strings.Join(pn, ",")
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, tcppn, filepath, funcname)
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, tcppn, contpid, filepath, funcname)
 
 		fmt.Fprintln(o, "Starting x-agent Pod...")
 
@@ -428,8 +458,25 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, filepath str
 
 		agent.SetupCloseHandler()
 
+	} else if probes == "uretprobe" {
+		pn := getUProbeFuncType()
+		upn := strings.Join(pn, ",")
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, upn, contpid, filepath, funcname)
+
+		fmt.Fprintln(o, "Starting x-agent Pod...")
+
+		agent.ApplyAgentPod()
+
+		fmt.Fprintln(o, "Starting x-agent Service...")
+		agent.ApplyAgentService()
+
+		agent.SetupCloseHandler()
+
+
+
+
 	} else {
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, probes, filepath, funcname)
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, probes, contpid, filepath, funcname)
 
 		//Start x-agent Pod
 		fmt.Fprintln(o, "Starting x-agent Pod...")
@@ -446,9 +493,9 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, filepath str
 	return nil
 }
 
-func getTcpProbeNames() []string {
+/*func getTcpProbeNames() []string {
 
 	pn := []string{"tcptracer", "tcpconnect", "tcpaccept"}
 	return pn
 
-}
+}*/

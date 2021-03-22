@@ -27,6 +27,11 @@ func Init() {
 						Unique:  true,
 						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
 					},
+					"pn": {
+						Name:    "pn",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "ProbeName"},
+					},
 					"pid": {
 						Name:    "pid",
 						Unique:  false,
@@ -34,7 +39,7 @@ func Init() {
 					},
 
 					"retval": {
-						Name:    "retvalue",
+						Name:    "retval",
 						Unique:  false,
 						Indexer: &memdb.StringFieldIndex{Field: "Retval"},
 					},
@@ -428,7 +433,7 @@ func UpdateUretProbeLogs(log UretProbeLog) error {
 	timestamp := time.Now().UnixNano()
 	logs := []*UretProbeLog{
 
-		{timestamp,log.Pid, log.Retval},
+		{timestamp,log.ProbeName,log.Pid, log.Retval},
 	}
 
 	for _, p := range logs {

@@ -43,7 +43,8 @@ func receiveLog(e events.Event) {
 
 	}
 }
-func uretprobeLog(e events.Event) {
+
+func uretProbeLog(e events.Event) {
 	if e, ok := e.(events.UretProbeLogEvent); ok {
 
 		uret := events.UretProbeLogEvent{TimeStamp: e.TimeStamp,
@@ -53,6 +54,46 @@ func uretprobeLog(e events.Event) {
 		}
 		uretlogs := database.UretProbeLog(uret)
 		err := database.UpdateUretProbeLogs(uretlogs)
+		if err != nil {
+
+			os.Exit(1)
+		}
+
+		events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
+
+	}
+}
+
+func uretProbeCountLog(e events.Event) {
+	if e, ok := e.(events.UretProbeCountLogEvent); ok {
+
+		uret := events.UretProbeCountLogEvent{TimeStamp: e.TimeStamp,
+			ProbeName: e.ProbeName,
+			Count:       e.Count,
+			Retval:    e.Retval,
+		}
+		uretlogs := database.UretProbeCountLog(uret)
+		err := database.UpdateUretProbeCountLogs(uretlogs)
+		if err != nil {
+
+			os.Exit(1)
+		}
+
+		events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
+
+	}
+}
+
+
+func uretProbeFreqLog(e events.Event) {
+	if e, ok := e.(events.UretProbeFreqLogEvent); ok {
+
+		uret := events.UretProbeFreqLogEvent{TimeStamp: e.TimeStamp,
+			ProbeName: e.ProbeName,
+			Time:      e.Time,
+			}
+		uretlogs := database.UretProbeFreqLog(uret)
+		err := database.UpdateUretProbeFreqLogs(uretlogs)
 		if err != nil {
 
 			os.Exit(1)
@@ -212,4 +253,9 @@ func SubscribeListeners() {
 	events.Subscribe(execsnoopLog, "log:execsnoop")
 	events.Subscribe(biosnoopLog, "log:biosnoop")
 	events.Subscribe(cachestatLog, "log:cachestat")
+	events.Subscribe(uretProbeLog, "log:uret")
+	events.Subscribe(uretProbeCountLog, "log:uretcount")
+	events.Subscribe(uretProbeFreqLog, "log:uretfreq")
+
+
 }

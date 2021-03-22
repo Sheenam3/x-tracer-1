@@ -435,6 +435,79 @@ func viewProbeNames(g *gocui.Gui) {
 
 }
 
+
+func viewUretProbe(g *gocui.Gui, lMaxX int, lMaxY int) error {
+	w := lMaxX / 2
+	h := lMaxY / 4
+	minX := (lMaxX / 2) - (w / 2)
+	minY := (lMaxY / 2) - (h / 2)
+	maxX := minX + w
+	maxY := minY + h
+	// Main view
+	if v, err := g.SetView("uretprobe", minX, minY, maxX, maxY); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+		// Configure view
+		v.Title = " Select User Function Type "
+		v.Frame = true
+		v.Highlight = true
+		v.SelBgColor = gocui.ColorGreen
+		v.SelFgColor = gocui.ColorBlack
+		viewUserFuncType(g)
+
+	}
+	return nil
+}
+
+func viewUserFuncType(g *gocui.Gui) {
+
+	g.Update(func(g *gocui.Gui) error {
+
+		v, err := g.View("uretprobe")
+		if err != nil {
+			return err
+		}
+		utype := getUProbeFuncType()
+		v.Clear()
+
+		if len(utype) >= 0 {
+			for i := range utype {
+				fmt.Fprintln(v, utype[i])
+			}
+		} else {
+
+		}
+
+		setViewCursorToLine(g, v, utype, "Retval")
+
+		return nil
+
+	})
+
+}
+
+
+func viewContPid(g *gocui.Gui, lMaxX int, lMaxY int ) error {
+
+	w := lMaxX / 2
+	h := lMaxY / 4
+	minX := (lMaxX / 2) - (w / 2)
+	minY := (lMaxY / 2) - (h / 2)
+	maxX := minX + w
+	maxY := minY + h
+	title := "Enter Container Pid - you can use this command (docker inspect cont_id | grep m1 Pid)"
+	if iv, err := g.SetView("contpid", minX, minY/2, maxX, maxY/2); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+		iv.Title = title
+		iv.Editable = true
+		g.Cursor = true
+	}
+	return nil
+}
+
 func viewFilePath(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 
 	w := lMaxX / 2
@@ -444,7 +517,6 @@ func viewFilePath(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter File/Program Path"
-//	name := "filepath"
 	if iv, err := g.SetView("filepath", minX, minY/2, maxX, maxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
@@ -466,7 +538,6 @@ func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter Function Name"
-//	name := "funcname"
 	if iv, err := g.SetView("funcname", minX, minY/2, maxX, maxY/2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
@@ -480,9 +551,9 @@ func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	return nil
 }
 
-func getProbeNames() []string {
+/*func getProbeNames() []string {
 
 	pn := []string{"uretprobe","tcptracer", "tcpconnect", "tcpaccept", "tcplife", "execsnoop", "biosnoop", "cachestat", "All TCP Probes", "All Probes"}
 	return pn
 
-}
+}*/

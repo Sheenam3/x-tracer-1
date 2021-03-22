@@ -33,8 +33,11 @@ func main() {
 
 	funcName := os.Getenv("funcName")
 
+	contPid  := os.Getenv("contPid")
 
 	Probe := strings.Split(probeName, ",")
+
+
 	cli, err := client.NewClientWithOpts(client.WithHost("unix:///var/run/docker.sock"), client.WithAPIVersionNegotiation())
 	if err != nil {
 		panic(err)
@@ -48,7 +51,7 @@ func main() {
 	log.Printf("Start new client")
 
 	testClient := pkg.New("6666", serverIp)
-	testClient.StartClient(Probe, topResult.Processes, filePath, funcName)
+	testClient.StartClient(Probe, topResult.Processes, contPid, filePath, funcName)
 
 	for {
 		fmt.Println("x-agent - Sleeping")

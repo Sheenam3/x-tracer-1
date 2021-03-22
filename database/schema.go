@@ -84,6 +84,7 @@ type CacheStatLog struct {
 
 type UretProbeLog struct {
 	TimeStamp int64
+	ProbeName string
 	Pid       string
 	Retval    string
 }
