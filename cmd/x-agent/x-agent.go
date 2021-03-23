@@ -49,7 +49,9 @@ func main() {
 	fmt.Println(topResult.Processes)
 
 	log.Printf("Start new client")
-
+	fmt.Println("PID-", contPid)
+	fmt.Println("FilePath-",filePath)
+	fmt.Println("Funcname", funcName)
 	testClient := pkg.New("6666", serverIp)
 	testClient.StartClient(Probe, topResult.Processes, contPid, filePath, funcName)
 

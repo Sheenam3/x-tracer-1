@@ -8,6 +8,8 @@ import (
 
 var (
 	up   *memdb.MemDB
+	upc  *memdb.MemDB
+	upf  *memdb.MemDB
 	db   *memdb.MemDB
 	tldb *memdb.MemDB
 	es   *memdb.MemDB
@@ -44,6 +46,63 @@ func Init() {
 						Indexer: &memdb.StringFieldIndex{Field: "Retval"},
 					},
 				},
+			},
+		},
+	}
+
+	schemaupc := &memdb.DBSchema{
+		Tables: map[string]*memdb.TableSchema{
+			"uretcount": {
+				Name: "uretcount",
+				Indexes: map[string]*memdb.IndexSchema{
+					"id": {
+						Name:    "id",
+						Unique:  true,
+						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+					},
+					"pn": {
+						Name:    "pn",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "ProbeName"},
+					},
+					"pid": {
+						Name:    "pid",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Pid"},
+					},
+
+					"count": {
+						Name:    "count",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Count"},
+					},
+				},
+			},
+		},
+	}
+
+
+	schemaupf := &memdb.DBSchema{
+		Tables: map[string]*memdb.TableSchema{
+			"uretfreq": {
+				Name: "uretfreq",
+				Indexes: map[string]*memdb.IndexSchema{
+					"id": {
+						Name:    "id",
+						Unique:  true,
+						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+					},
+					"pn": {
+						Name:    "pn",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "ProbeName"},
+					},
+					"time": {
+						Name:    "time",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Time"},
+					},
+				},		
 			},
 		},
 	}
@@ -395,6 +454,18 @@ func Init() {
 		panic(err)
 	}
 
+	upc, err = memdb.NewMemDB(schemaupc)
+	if err != nil {
+		panic(err)
+	}
+
+
+	upf, err = memdb.NewMemDB(schemaupf)
+	if err != nil {
+		panic(err)
+	}
+
+
 	//Create a new data base for tcplogs
 	db, err = memdb.NewMemDB(schema)
 	if err != nil {
@@ -429,7 +500,7 @@ func Init() {
 
 func UpdateUretProbeLogs(log UretProbeLog) error {
 
-	txn := db.Txn(true)
+	txn := up.Txn(true)
 	timestamp := time.Now().UnixNano()
 	logs := []*UretProbeLog{
 
@@ -438,6 +509,50 @@ func UpdateUretProbeLogs(log UretProbeLog) error {
 
 	for _, p := range logs {
 		if err := txn.Insert("uretprobe", p); err != nil {
+			return err
+		}
+	}
+
+	txn.Commit()
+
+	return nil
+
+}
+
+
+func UpdateUretProbeCountLogs(log UretProbeCountLog) error {
+
+	txn := upc.Txn(true)
+	timestamp := time.Now().UnixNano()
+	logs := []*UretProbeCountLog{
+
+		{timestamp,log.ProbeName,log.Pid, log.Count},
+	}
+
+	for _, p := range logs {
+		if err := txn.Insert("uretcount", p); err != nil {
+			return err
+		}
+	}
+
+	txn.Commit()
+
+	return nil
+
+}
+
+
+func UpdateUretProbeFreqLogs(log UretProbeFreqLog) error {
+
+	txn := upf.Txn(true)
+	timestamp := time.Now().UnixNano()
+	logs := []*UretProbeFreqLog{
+
+		{timestamp,log.ProbeName,log.Time},
+	}
+
+	for _, p := range logs {
+		if err := txn.Insert("uretfreq", p); err != nil {
 			return err
 		}
 	}
@@ -581,6 +696,51 @@ func GetLogs() map[int64]*Log {
 	return logs
 }
 
+func GetUretProbeCountLogs() map[int64]*UretProbeCountLog {
+
+	txn := upc.Txn(false)
+	defer txn.Abort()
+
+	logs := make(map[int64]*UretProbeCountLog)
+
+	it, err := txn.Get("uretcount", "id")
+	if err != nil {
+		panic(err)
+	}
+
+	for obj := it.Next(); obj != nil; obj = it.Next() {
+		p := obj.(*UretProbeCountLog)
+		timestamp := p.TimeStamp
+		logs[timestamp] = p
+
+	}
+
+	return logs
+}
+
+func GetUretProbeFreqLogs() map[int64]*UretProbeFreqLog {
+
+	txn := upf.Txn(false)
+	defer txn.Abort()
+
+	logs := make(map[int64]*UretProbeFreqLog)
+
+	it, err := txn.Get("uretfreq", "id")
+	if err != nil {
+		panic(err)
+	}
+
+	for obj := it.Next(); obj != nil; obj = it.Next() {
+		p := obj.(*UretProbeFreqLog)
+		timestamp := p.TimeStamp
+		logs[timestamp] = p
+
+	}
+
+	return logs
+}
+
+
 func GetUretProbeLogs() map[int64]*UretProbeLog {
 
 	txn := up.Txn(false)
@@ -602,6 +762,7 @@ func GetUretProbeLogs() map[int64]*UretProbeLog {
 
 	return logs
 }
+
 
 func GetTcpLifeLogs() map[int64]*TcpLifeLog {
 
@@ -704,6 +865,38 @@ func DeleteUretLogs() int {
 	txn := up.Txn(true)
 
 	del, err := txn.DeleteAll("uretprobe", "id")
+	if err != nil {
+		panic(err)
+		return 0
+	}
+
+	txn.Commit()
+
+	return del
+
+}
+
+func DeleteUretCountLogs() int {
+
+	txn := upc.Txn(true)
+
+	del, err := txn.DeleteAll("uretcount", "id")
+	if err != nil {
+		panic(err)
+		return 0
+	}
+
+	txn.Commit()
+
+	return del
+
+}
+
+func DeleteUretFreqLogs() int {
+
+	txn := upf.Txn(true)
+
+	del, err := txn.DeleteAll("uretfreq", "id")
 	if err != nil {
 		panic(err)
 		return 0

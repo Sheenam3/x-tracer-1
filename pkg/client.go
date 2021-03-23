@@ -328,13 +328,13 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 			}()
 
 		case "Count":
-
+			fmt.Println("At Count")
 			loguretcountprobe := make(chan pp.Log, 1)
 			go pp.RunUretprobeCount(probename[0], loguretcountprobe, contpid, filepath, funcname)
 			go func() {
 
 				for val := range loguretcountprobe {
-
+					fmt.Println("after parsing:", val.Fulllog)
 					err = c.startLogStream(client, &pb.Log{
 						Pid:       probe_num,
 						ProbeName: val.Probe,

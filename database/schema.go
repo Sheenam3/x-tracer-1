@@ -91,12 +91,13 @@ type UretProbeLog struct {
 
 type UretProbeCountLog struct {
 	TimeStamp int64
-	FuncName  string
+	ProbeName  string
 	Pid       string
 	Count     string
 }
 
 type UretProbeFreqLog struct {
 	TimeStamp int64
+	ProbeName  string
 	Time    string
 }

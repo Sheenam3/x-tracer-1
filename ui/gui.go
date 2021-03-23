@@ -30,7 +30,8 @@ var NAMESPACE string = "default"
 var FILEPATH string = "empty"
 var FUNCNAME string = "empty"
 var CONTPID string = "empty"
-
+var PROBE string = "empty"
+var URET_TYPE string = "empty"
 // Configure globale keys
 var keys []Key = []Key{
 	{"", gocui.KeyCtrlC, actionGlobalQuit},
@@ -418,7 +419,7 @@ func hideConfirmation(g *gocui.Gui) {
 	g.DeleteView("confirmation")
 }
 
-func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, uretype string ,contpid string, filepath string, funcname string) error {
+func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid string, filepath string, funcname string) error {
 	cs := getClientSet()
 	var containerId []string
 
@@ -459,18 +460,33 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, uretype stri
 		agent.SetupCloseHandler()
 
 	} else if probes == "uretprobe" {
-		pn := getUProbeFuncType()
-		upn := strings.Join(pn, ",")
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, upn, contpid, filepath, funcname)
+		if URET_TYPE == "All"{
+			pn := getUProbeFuncType()
+			upn := strings.Join(pn, ",")
+			agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, upn, contpid, filepath, funcname)
+			fmt.Fprintln(o, "Starting x-agent Pod...")
+	
+			agent.ApplyAgentPod()
+	
+			fmt.Fprintln(o, "Starting x-agent Service...")
+			agent.ApplyAgentService()
 
-		fmt.Fprintln(o, "Starting x-agent Pod...")
+			agent.SetupCloseHandler()
 
-		agent.ApplyAgentPod()
+		
+		}else{
+		
+			agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, URET_TYPE, contpid, filepath, funcname)
+			fmt.Fprintln(o, "Starting x-agent Pod...")
+	
+			agent.ApplyAgentPod()
+	
+			fmt.Fprintln(o, "Starting x-agent Service...")
+			agent.ApplyAgentService()
 
-		fmt.Fprintln(o, "Starting x-agent Service...")
-		agent.ApplyAgentService()
+			agent.SetupCloseHandler()
 
-		agent.SetupCloseHandler()
+		}
 
 
 

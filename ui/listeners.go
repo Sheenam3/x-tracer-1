@@ -81,12 +81,12 @@ func refreshSingleLogs(e events.Event) {
 		g.Update(func(g *gocui.Gui) error {
 
 			pn := e.Pn
-			if pn == "Retval" || pn == "Count" || pn == "Frequency"{
+//			if pn == "Retval" || pn == "Count" || pn == "Frequency"{
 
 				view, err := g.View("logs")
 				if err != nil {
 				return err
-				}	
+			}
 			view.Clear()
 
 			_, _ = fmt.Fprint(view, pkg.GetActiveLogs(pn))

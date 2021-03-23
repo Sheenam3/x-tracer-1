@@ -29,6 +29,13 @@ var cswbLogs []string
 var upwbLogs []string
 var upbufLogs []string
 
+var upcwbLogs []string
+var upcbufLogs []string
+
+var upfwbLogs []string
+var upfbufLogs []string
+
+
 //var bsbufLogs []string
 //var bswbLogs []string
 var esbufLogs []string
@@ -50,10 +57,19 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 		Probe_Num = r.Pid
 		parse := strings.Fields(string(r.Log))
 
-	       if r.ProbeName == "uretprobe" {
+	       if r.ProbeName == "Retval" {
 			events.PublishEvent("log:uret", events.UretProbeLogEvent{ProbeName: r.ProbeName,
 				Pid: parse[0],
 				Retval: parse[1],
+			})
+	       }else if r.ProbeName == "Count" {
+			events.PublishEvent("log:uretcount", events.UretProbeCountLogEvent{ProbeName: r.ProbeName,
+				Pid: parse[0],
+				Count: parse[1],
+			})
+	       }  else if r.ProbeName == "Frequency" {
+			events.PublishEvent("log:uretfreq", events.UretProbeFreqLogEvent{ProbeName: r.ProbeName,
+				Time: parse[1],
 			})
 	       } else if r.ProbeName == "tcpconnect" {
 			events.PublishEvent("log:receive", events.ReceiveLogEvent{ProbeName: r.ProbeName,
@@ -185,7 +201,7 @@ func GetActiveLogs(pn string) string {
 
 	var keys []int64
 
-	if pn == "uretprobe" {
+	if pn == "Retval" {
 		var uretLogs []string
 		logs := database.GetUretProbeLogs()
 
@@ -219,6 +235,82 @@ func GetActiveLogs(pn string) string {
 		} else {
 
 			return strings.Join(upwbLogs, "\n")
+
+		}
+
+	} 
+	if pn == "Count" {
+		var uretLogs []string
+		logs := database.GetUretProbeCountLogs()
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+		for k := range logs {
+			keys = append(keys, k)
+
+		}
+
+		sortkeys.Int64s(keys)
+
+		for _, log := range keys {
+			val := logs[log]
+			uretLogs = append(uretLogs, fmt.Sprintf("{PID:%s | COUNT:%s\n", val.Pid, val.Count))
+
+		}
+
+		for i := range uretLogs {
+			upcbufLogs = append(upcbufLogs, uretLogs[i])
+		}
+		if len(upcbufLogs) >= 9 {
+
+			upcwbLogs = upcbufLogs
+			upcbufLogs = nil
+			del := database.DeleteUretCountLogs()
+			return strings.Join(upcwbLogs, "\n")
+			fmt.Println(del)
+		} else {
+
+			return strings.Join(upcwbLogs, "\n")
+
+		}
+
+	} 
+	if pn == "Frequency" {
+		var uretLogs []string
+		logs := database.GetUretProbeFreqLogs()
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+		for k := range logs {
+			keys = append(keys, k)
+
+		}
+
+		sortkeys.Int64s(keys)
+
+		for _, log := range keys {
+			val := logs[log]
+			uretLogs = append(uretLogs, fmt.Sprintf("{ Time in microseconds :%s\n", val.Time))
+
+		}
+
+		for i := range uretLogs {
+			upfbufLogs = append(upfbufLogs, uretLogs[i])
+		}
+		if len(upfbufLogs) >= 9 {
+
+			upfwbLogs = upfbufLogs
+			upfbufLogs = nil
+			del := database.DeleteUretFreqLogs()
+			return strings.Join(upfwbLogs, "\n")
+			fmt.Println(del)
+		} else {
+
+			return strings.Join(upfwbLogs, "\n")
 
 		}
 

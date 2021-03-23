@@ -59,7 +59,15 @@ func uretProbeLog(e events.Event) {
 			os.Exit(1)
 		}
 
+		if Probe_Num == 1 {
+
 		events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
+
+		} else {
+
+		events.PublishEvent("logs:refreshuret", events.EmptyMessage{Pn: e.ProbeName})
+
+		}
 
 	}
 }
@@ -69,8 +77,8 @@ func uretProbeCountLog(e events.Event) {
 
 		uret := events.UretProbeCountLogEvent{TimeStamp: e.TimeStamp,
 			ProbeName: e.ProbeName,
+			Pid: e.Pid,
 			Count:       e.Count,
-			Retval:    e.Retval,
 		}
 		uretlogs := database.UretProbeCountLog(uret)
 		err := database.UpdateUretProbeCountLogs(uretlogs)
@@ -78,8 +86,16 @@ func uretProbeCountLog(e events.Event) {
 
 			os.Exit(1)
 		}
+		if Probe_Num == 1 {
 
 		events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
+
+		} else {
+
+		events.PublishEvent("logs:refreshuret", events.EmptyMessage{Pn: e.ProbeName})
+
+		}
+
 
 	}
 }
@@ -99,7 +115,16 @@ func uretProbeFreqLog(e events.Event) {
 			os.Exit(1)
 		}
 
+
+		if Probe_Num == 1 {
+
 		events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
+
+		} else {
+
+		events.PublishEvent("logs:refreshuret", events.EmptyMessage{Pn: e.ProbeName})
+
+		}
 
 	}
 }

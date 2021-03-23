@@ -136,7 +136,7 @@ func actionViewProbesSelect(g *gocui.Gui, v *gocui.View) error {
 	LOG_MOD = "probe"
 
 	if line == "uretprobe" {
-
+		PROBE = line
 		err := getContPid(g)
 		return err
 		//errr := getFuncName(g)
@@ -262,9 +262,10 @@ func actionFuncNameInput(g *gocui.Gui, iv *gocui.View) error {
 func actionViewUProbeTypeSelect(g *gocui.Gui, v *gocui.View) error {
 
 	line, err := getViewLine(g, v)
+	URET_TYPE = line
 	G, p, lv := showViewPodsLogs(g)
 	displayConfirmation(g, line+" probe selected")
-	startAgent(G, p, lv, line, CONTPID, FILEPATH, FUNCNAME)
+	startAgent(G, p, lv, PROBE, CONTPID, FILEPATH, FUNCNAME)
 	G.SetViewOnTop("logs")
 	G.SetCurrentView("logs")
 
