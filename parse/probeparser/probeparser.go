@@ -34,6 +34,7 @@ func GetNS(pid string) string {
 
 }
 
+
 func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
 
 
@@ -66,8 +67,11 @@ func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath s
 func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
 
 
-	command  := `uretprobe:` + filepath + `:` + funcname + `{ @[pid] = count(); }` +`interval:s:1` + `{ print(@); clear(@); }`
-	cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
+	//command  := `uretprobe:` + filepath + `:` + funcname + `{ @[pid] = count(); }` +`interval:s:1` + `{ print(@); clear(@); }`
+	//cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
+	// testing for now the below command- it worked
+	cmd := exec.Command("bpftrace", "-e" , filepath)
+		fmt.Println(funcname, pid)
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -79,6 +83,7 @@ func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath 
 	for {
 
 		line, _, _ := buf.ReadLine()
+		fmt.Println("trrr:", cmd)
 		parsedLine := strings.Fields(string(line))
                 if (len(parsedLine) > 0) && parsedLine[0] != "Attaching"{
 			s := strings.Split(parsedLine[0], "[")
@@ -138,7 +143,7 @@ func RunTcptracer(tool string, logtcptracer chan Log, pid string) {
 
 		line, _, _ := buf.ReadLine()
 		parsedLine := strings.Fields(string(line))
-
+		fmt.Println(cmd)
 		if parsedLine[0] != "Tracing" {
 			if parsedLine[0] != "TIME(s)" {
 				ppid, err := strconv.ParseInt(parsedLine[3], 10, 64)
