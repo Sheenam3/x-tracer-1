@@ -1,4 +1,4 @@
-FROM sheenam3/ubuntu18.04
+FROM sheenam3/bpftrace
 COPY ebpf /usr/share/bcc/tools/ebpf/
 RUN chmod +x /usr/share/bcc/tools/ebpf/*
 COPY build/entrypoint.sh /
