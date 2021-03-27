@@ -487,7 +487,7 @@ func viewUserFuncType(g *gocui.Gui) {
 
 }
 
-
+/*
 func viewContPid(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 
 	w := lMaxX / 2
@@ -527,9 +527,9 @@ func viewFilePath(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 	}
 	return nil
 }
+*/
 
-
-func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
+func viewUserInput(g *gocui.Gui, lMaxX int, lMaxY int) error {
 
 	w := lMaxX / 2
 	h := lMaxY / 4
@@ -537,8 +537,8 @@ func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	minY := (lMaxY / 2) - (h / 2)
 	maxX := minX + w
 	maxY := minY + h
-	title := "Enter Function Name"
-	if iv, err := g.SetView("funcname", minX, minY/2, maxX, maxY/2); err != nil {
+	title := "Enter filepath & function name together"
+	if iv, err := g.SetView("user", minX-10, minY, maxX+10, maxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -551,9 +551,4 @@ func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	return nil
 }
 
-/*func getProbeNames() []string {
 
-	pn := []string{"uretprobe","tcptracer", "tcpconnect", "tcpaccept", "tcplife", "execsnoop", "biosnoop", "cachestat", "All TCP Probes", "All Probes"}
-	return pn
-
-}*/

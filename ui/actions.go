@@ -137,98 +137,19 @@ func actionViewProbesSelect(g *gocui.Gui, v *gocui.View) error {
 
 	if line == "uretprobe" {
 		PROBE = line
-		err := getContPid(g)
+		err := getUserInput(g)
 		return err
-		//errr := getFuncName(g)
 	}else {
 		G, p, lv := showViewPodsLogs(g)
 		displayConfirmation(g, line+" probe selected")
-		startAgent(G, p, lv, line, CONTPID ,FILEPATH, FUNCNAME)
+		startAgent(G, p, lv, line, "empty")
 		G.SetViewOnTop("logs")
 		G.SetCurrentView("logs")
 	}
 	return err
 }
 
-func actionContPidInput(g *gocui.Gui, iv *gocui.View) error {
-	var err error
-	// We want to read the view’s buffer from the beginning.
-	iv.Rewind()
-
-	// If there is text input then add the item,
-	// else go back to the input view.
-	if iv.Buffer() != "" {
-			CONTPID = iv.Buffer()
-	} else {
-			getContPid(g)
-			return nil
-	}
-
-	/*case "funcname":
-	
-		if iv.Buffer() != "" {
-			FUNCNAME = iv.Buffer()
-		} else {
-			getFuncName(g)
-			return nil
-		}*/
-		// Clear the input view
-	iv.Clear()
-	// No input, no cursor.
-/*	g.Cursor = false
-	// !!!
-	// Must delete keybindings before the view, or fatal error !!!
-	// !!!
-	g.DeleteKeybindings(iv.Name())
-	if err = g.DeleteView(iv.Name()); err != nil {
-		return err
-	}*/
-	err = getFilePath(g)
-	return err
-
-}
-
-
-func actionFilePathInput(g *gocui.Gui, iv *gocui.View) error {
-	var err error
-	// We want to read the view’s buffer from the beginning.
-	iv.Rewind()
-
-	// If there is text input then add the item,
-	// else go back to the input view.
-	if iv.Buffer() != "" {
-			FILEPATH = iv.Buffer()
-	} else {
-			getFilePath(g)
-			return nil
-	}
-
-	/*case "funcname":
-	
-		if iv.Buffer() != "" {
-			FUNCNAME = iv.Buffer()
-		} else {
-			getFuncName(g)
-			return nil
-		}*/
-		// Clear the input view
-	iv.Clear()
-	// No input, no cursor.
-/*	g.Cursor = false
-	// !!!
-	// Must delete keybindings before the view, or fatal error !!!
-	// !!!
-	g.DeleteKeybindings(iv.Name())
-	if err = g.DeleteView(iv.Name()); err != nil {
-		return err
-	}*/
-	err = getFuncName(g)
-	return err
-
-}
-
-
-func actionFuncNameInput(g *gocui.Gui, iv *gocui.View) error {
+func actionUserInput(g *gocui.Gui, iv *gocui.View) error {
 	//var err error
 	// We want to read the view’s buffer from the beginning.
 	iv.Rewind()
@@ -236,9 +157,9 @@ func actionFuncNameInput(g *gocui.Gui, iv *gocui.View) error {
 	// If there is text input then add the item,
 	// else go back to the input view.
 	if iv.Buffer() != "" {
-			FUNCNAME = iv.Buffer()
+			USER_INPUT = iv.Buffer()
 	} else {
-			getFuncName(g)
+			getUserInput(g)
 			return nil
 	}
 
@@ -265,7 +186,7 @@ func actionViewUProbeTypeSelect(g *gocui.Gui, v *gocui.View) error {
 	URET_TYPE = line
 	G, p, lv := showViewPodsLogs(g)
 	displayConfirmation(g, line+" probe selected")
-	startAgent(G, p, lv, PROBE, CONTPID, FILEPATH, FUNCNAME)
+	startAgent(G, p, lv, PROBE, USER_INPUT)
 	G.SetViewOnTop("logs")
 	G.SetCurrentView("logs")
 

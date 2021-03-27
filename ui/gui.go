@@ -27,11 +27,10 @@ var (
 var version = "master"
 var LOG_MOD string = "pod"
 var NAMESPACE string = "default"
-var FILEPATH string = "empty"
-var FUNCNAME string = "empty"
-var CONTPID string = "empty"
+var USER_INPUT string = "empty"
 var PROBE string = "empty"
 var URET_TYPE string = "empty"
+
 // Configure globale keys
 var keys []Key = []Key{
 	{"", gocui.KeyCtrlC, actionGlobalQuit},
@@ -49,9 +48,9 @@ var keys []Key = []Key{
 	{"probes", gocui.KeyArrowUp, actionViewNamespacesUp},
 	{"probes", gocui.KeyArrowDown, actionViewNamespacesDown},
 	{"probes", gocui.KeyEnter, actionViewProbesSelect},
-	{"contpid",  gocui.KeyEnter, actionContPidInput},
-	{"filepath",  gocui.KeyEnter, actionFilePathInput},
-	{"funcname",  gocui.KeyEnter, actionFuncNameInput},
+	//{"contpid",  gocui.KeyEnter, actionContPidInput},
+	{"user",  gocui.KeyEnter, actionUserInput},
+	//{"funcname",  gocui.KeyEnter, actionFuncNameInput},
 	{"uretprobe", gocui.KeyArrowUp, actionViewNamespacesUp},
 	{"uretprobe", gocui.KeyArrowDown, actionViewNamespacesDown},
 	{"uretprobe", gocui.KeyEnter, actionViewUProbeTypeSelect},
@@ -113,9 +112,9 @@ func uiLayout(g *gocui.Gui) error {
 	viewTitle(g, maxX, maxY)
 	viewPods(g, maxX, maxY)
 	viewStatusBar(g, maxX, maxY)
-	viewFilePath(g, maxX, maxY)
-	viewFuncName(g, maxX, maxY)
-	viewContPid(g, maxX, maxY)
+	viewUserInput(g, maxX, maxY)
+	//viewFuncName(g, maxX, maxY)
+	//viewContPid(g, maxX, maxY)
 	viewUretProbe(g, maxX, maxY)
 	return nil
 }
@@ -249,7 +248,7 @@ func showSelectUserFuncType(g *gocui.Gui) error {
 	return nil
 }
 
-
+/*
 //get contaner pid from user
 func getContPid(g *gocui.Gui) error {
 
@@ -269,13 +268,13 @@ func getFilePath(g *gocui.Gui) error {
 	return nil
 }
 
-
+*/
 
 //get uretprobe filepath from user
-func getFuncName(g *gocui.Gui) error {
+func getUserInput(g *gocui.Gui) error {
 
-	g.SetViewOnTop("funcname")
-	g.SetCurrentView("funcname")
+	g.SetViewOnTop("user")
+	g.SetCurrentView("user")
 
 		return nil
 }
@@ -419,7 +418,7 @@ func hideConfirmation(g *gocui.Gui) {
 	g.DeleteView("confirmation")
 }
 
-func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid string, filepath string, funcname string) error {
+func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, userinput string) error {
 	cs := getClientSet()
 	var containerId []string
 
@@ -433,7 +432,7 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid stri
 
 		pn := getProbeNames()
 		allpn := strings.Join(pn, ",")
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, allpn, contpid, filepath, funcname)
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, allpn, userinput)
 
 		//Start x-agent Pod
 		fmt.Fprintln(o, "Starting x-agent Pod...")
@@ -448,7 +447,7 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid stri
 	} else if probes == "All TCP Probes" {
 		pn := getTcpProbeNames()
 		tcppn := strings.Join(pn, ",")
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, tcppn, contpid, filepath, funcname)
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, tcppn, userinput)
 
 		fmt.Fprintln(o, "Starting x-agent Pod...")
 
@@ -460,30 +459,25 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid stri
 		agent.SetupCloseHandler()
 
 	} else if probes == "uretprobe" {
+	//	URET = "true"
 		if URET_TYPE == "All"{
 			pn := getUProbeFuncType()
 			upn := strings.Join(pn, ",")
-			agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, upn, contpid, filepath, funcname)
+			agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, upn, userinput)
 			fmt.Fprintln(o, "Starting x-agent Pod...")
-	
 			agent.ApplyAgentPod()
-	
 			fmt.Fprintln(o, "Starting x-agent Service...")
 			agent.ApplyAgentService()
-
 			agent.SetupCloseHandler()
 
-		
+
 		}else{
-		
-			agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, URET_TYPE, contpid, filepath, funcname)
+
+			agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, URET_TYPE, userinput)
 			fmt.Fprintln(o, "Starting x-agent Pod...")
-	
 			agent.ApplyAgentPod()
-	
 			fmt.Fprintln(o, "Starting x-agent Service...")
 			agent.ApplyAgentService()
-
 			agent.SetupCloseHandler()
 
 		}
@@ -492,7 +486,7 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid stri
 
 
 	} else {
-		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, probes, contpid, filepath, funcname)
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, probes, userinput)
 
 		//Start x-agent Pod
 		fmt.Fprintln(o, "Starting x-agent Pod...")
@@ -509,9 +503,3 @@ func startAgent(g *gocui.Gui, p string, o io.Writer, probes string, contpid stri
 	return nil
 }
 
-/*func getTcpProbeNames() []string {
-
-	pn := []string{"tcptracer", "tcpconnect", "tcpaccept"}
-	return pn
-
-}*/

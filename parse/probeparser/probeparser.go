@@ -35,11 +35,11 @@ func GetNS(pid string) string {
 }
 
 
-func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+func RunUretprobeFreq(tool string, loguretprobe chan Log,ucmd string) {
 
 
-	command := `uprobe:` + filepath + `:` + funcname + `{ @start = nsecs; }` + `uretprobe:` + filepath + `:` + funcname + `/@start/ { @time = ((nsecs - @start)/1000);  print(@time); delete(@start); }`
-	cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
+	//command := `uprobe:` + filepath + `:` + funcname + `{ @start = nsecs; }` + `uretprobe:` + filepath + `:` + funcname + `/@start/ { @time = ((nsecs - @start)/1000);  print(@time); delete(@start); }`
+	cmd := exec.Command("bpftrace", "-e",ucmd)
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -51,8 +51,10 @@ func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath s
 	for {
 
 		line, _, _ := buf.ReadLine()
+		fmt.Println(cmd)
 		parsedLine := strings.Fields(string(line))
 		if (len(parsedLine) > 0) && parsedLine[0] != "Attaching"{
+			fmt.Println("output:", string(line))
 			fmt.Println("Freq",parsedLine[0])
 			fmt.Println("Freq",parsedLine[1])
 			timest := 0.00
@@ -64,14 +66,14 @@ func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath s
 }
 
 
-func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+func RunUretprobeCount(tool string, loguretprobe chan Log, ucmd string) {
 
 
 	//command  := `uretprobe:` + filepath + `:` + funcname + `{ @[pid] = count(); }` +`interval:s:1` + `{ print(@); clear(@); }`
 	//cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
 	// testing for now the below command- it worked
-	cmd := exec.Command("bpftrace", "-e" , filepath)
-		fmt.Println(funcname, pid)
+	cmd := exec.Command("bpftrace", "-e" ,ucmd)
+
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -99,11 +101,11 @@ func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath 
 }
 
 
-func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
+func RunUretprobe(tool string, loguretprobe chan Log, ucmd string) {
 
 
-	command := `uretprobe:` + filepath + `:` + funcname + `{ printf("%d %d\n", pid, retval); }`
-	cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
+//	command := `uretprobe:` + filepath + `:` + funcname + `{ printf("%d %d\n", pid, retval); }`
+	cmd := exec.Command("bpftrace","-e",ucmd)
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -115,10 +117,12 @@ func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath strin
 	for {
 
 		line, _, _ := buf.ReadLine()
+		fmt.Println(cmd)
 		parsedLine := strings.Fields(string(line))
                 if (len(parsedLine) > 0) && parsedLine[0] != "Attaching"{
 
 			timest := 0.00
+			fmt.Println(string(line))
 			n := Log{Fulllog: string(line), Pid: 1234, Time: timest, Probe: tool}
 			loguretprobe <- n
 

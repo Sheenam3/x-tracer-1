@@ -14,6 +14,7 @@ import (
 
 func main() {
 
+	//var ucmd []string
 	log.Println("Start api...")
 
 	containerId := os.Getenv("containerId")
@@ -29,13 +30,11 @@ func main() {
 
 	probeName := os.Getenv("tools")
 
-	filePath := os.Getenv("filePath")
-
-	funcName := os.Getenv("funcName")
-
-	contPid  := os.Getenv("contPid")
+	ucmd  := os.Getenv("userInput")
 
 	Probe := strings.Split(probeName, ",")
+
+	//if uretprobe == "true" { ucmd = probecmd.GetUretCmd(userinput, Probe) }
 
 
 	cli, err := client.NewClientWithOpts(client.WithHost("unix:///var/run/docker.sock"), client.WithAPIVersionNegotiation())
@@ -49,11 +48,9 @@ func main() {
 	fmt.Println(topResult.Processes)
 
 	log.Printf("Start new client")
-	fmt.Println("PID-", contPid)
-	fmt.Println("FilePath-",filePath)
-	fmt.Println("Funcname", funcName)
+	fmt.Println("userinput-", ucmd)
 	testClient := pkg.New("6666", serverIp)
-	testClient.StartClient(Probe, topResult.Processes, contPid, filePath, funcName)
+	testClient.StartClient(Probe, topResult.Processes, ucmd)
 
 	for {
 		fmt.Println("x-agent - Sleeping")

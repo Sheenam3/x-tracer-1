@@ -26,7 +26,7 @@ func New(servicePort string, masterIp string) *StreamClient {
 		masterIp}
 }
 
-func (c *StreamClient) StartClient(probename []string, pidList [][]string, contpid string, filepath string, funcname string) {
+func (c *StreamClient) StartClient(probename []string, pidList [][]string, ucmd string) {
 
 	connect, err := grpc.Dial(c.ip+":"+c.port, grpc.WithInsecure())
 	if err != nil {
@@ -240,7 +240,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 
 	}else if len(probename) == 4 {
 			loguretprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobe(probename[0], loguretprobe, contpid, filepath, funcname)
+			go pp.RunUretprobe(probename[0], loguretprobe, ucmd)
 			go func() {
 
 				for val := range loguretprobe {
@@ -259,10 +259,9 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 
 			}()
 
-		
 
 			loguretcountprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobeCount(probename[1], loguretcountprobe, contpid, filepath, funcname)
+			go pp.RunUretprobeCount(probename[1], loguretcountprobe, ucmd)
 			go func() {
 
 				for val := range loguretcountprobe {
@@ -281,9 +280,9 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 
 			}()
 
-		
+
 			loguretfreqprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobeFreq(probename[2], loguretfreqprobe, contpid, filepath, funcname)
+			go pp.RunUretprobeFreq(probename[2], loguretfreqprobe, ucmd)
 			go func() {
 
 				for val := range loguretfreqprobe {
@@ -308,7 +307,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 		case "Retval":
 
 			loguretprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobe(probename[0], loguretprobe, contpid, filepath, funcname)
+			go pp.RunUretprobe(probename[0], loguretprobe, ucmd)
 			go func() {
 
 				for val := range loguretprobe {
@@ -330,7 +329,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 		case "Count":
 			fmt.Println("At Count")
 			loguretcountprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobeCount(probename[0], loguretcountprobe, contpid, filepath, funcname)
+			go pp.RunUretprobeCount(probename[0], loguretcountprobe, ucmd)
 			go func() {
 
 				for val := range loguretcountprobe {
@@ -352,7 +351,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 		case "Frequency":
 
 			loguretfreqprobe := make(chan pp.Log, 1)
-			go pp.RunUretprobeFreq(probename[0], loguretfreqprobe, contpid, filepath, funcname)
+			go pp.RunUretprobeFreq(probename[0], loguretfreqprobe, ucmd)
 			go func() {
 
 				for val := range loguretfreqprobe {
