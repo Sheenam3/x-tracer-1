@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"github.com/ITRI-ICL-Peregrine/x-tracer/database"
 	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
 	"os"
@@ -20,16 +21,13 @@ func receiveLog(e events.Event) {
 			Dport:    e.Dport,
 			Sport:    e.Sport,
 		}
-		tcplogs := database.TcpLog(tcp)
 
+		tcplogs := database.TcpLog(tcp)
 		err := database.UpdateLogs(tcplogs)
 		if err != nil {
-
 			os.Exit(1)
 		}
-
 		if Probe_Num == 1 {
-
 			events.PublishEvent("logs:refreshsingle", events.EmptyMessage{Pn: e.ProbeName})
 
 		} else if Probe_Num == 4 {
@@ -83,7 +81,7 @@ func uretProbeCountLog(e events.Event) {
 		uretlogs := database.UretProbeCountLog(uret)
 		err := database.UpdateUretProbeCountLogs(uretlogs)
 		if err != nil {
-
+			fmt.Println(err)
 			os.Exit(1)
 		}
 		if Probe_Num == 1 {

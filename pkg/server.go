@@ -67,7 +67,7 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 				Pid: parse[0],
 				Count: parse[1],
 			})
-	       }  else if r.ProbeName == "Frequency" {
+	       }  else if r.ProbeName == "Time" {
 			events.PublishEvent("log:uretfreq", events.UretProbeFreqLogEvent{ProbeName: r.ProbeName,
 				Time: parse[1],
 			})
@@ -84,6 +84,7 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 				Sport:    "0",
 			})
 		} else if r.ProbeName == "tcptracer" {
+			fmt.Println("Inside Server")
 			events.PublishEvent("log:receive", events.ReceiveLogEvent{ProbeName: r.ProbeName,
 				Sys_Time: parse[0],
 				T:        parse[1],
@@ -277,7 +278,7 @@ func GetActiveLogs(pn string) string {
 		}
 
 	} 
-	if pn == "Frequency" {
+	if pn == "Time" {
 		var uretLogs []string
 		logs := database.GetUretProbeFreqLogs()
 

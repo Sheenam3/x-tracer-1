@@ -27,7 +27,7 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
@@ -58,7 +58,7 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
@@ -90,7 +90,7 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
@@ -116,7 +116,7 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",

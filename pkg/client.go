@@ -333,8 +333,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, ucmd 
 			go func() {
 
 				for val := range loguretcountprobe {
-					fmt.Println("after parsing:", val.Fulllog)
-					err = c.startLogStream(client, &pb.Log{
+						err = c.startLogStream(client, &pb.Log{
 						Pid:       probe_num,
 						ProbeName: val.Probe,
 						Log:       val.Fulllog,
@@ -348,7 +347,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, ucmd 
 
 			}()
 
-		case "Frequency":
+		case "Time":
 
 			loguretfreqprobe := make(chan pp.Log, 1)
 			go pp.RunUretprobeFreq(probename[0], loguretfreqprobe, ucmd)
@@ -378,7 +377,6 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, ucmd 
 			go func() {
 
 				for val := range logtcptracer {
-
 					err = c.startLogStream(client, &pb.Log{
 						Pid:       probe_num,
 						ProbeName: val.Probe,
@@ -544,7 +542,6 @@ func (c *StreamClient) startLogStream(client pb.SentLogClient, r *pb.Log) error 
 	if err != nil {
 		return err
 	}
-
 	resp, err := stream.CloseAndRecv()
 	if err != nil {
 		return err

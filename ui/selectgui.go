@@ -18,7 +18,7 @@ func getTcpProbeNames() []string {
 
 func getUProbeFuncType() []string {
 
-        pt := []string{"Retval","Count", "Frequency", "All"}
+        pt := []string{"Retval","Count", "Time", "All"}
 
         return pt
 
