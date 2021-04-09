@@ -59,17 +59,19 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 
 	       if r.ProbeName == "Retval" {
 			events.PublishEvent("log:uret", events.UretProbeLogEvent{ProbeName: r.ProbeName,
-				Pid: parse[0],
-				Retval: parse[1],
+				Pid: parse[1],
+				Retval: parse[2],
 			})
 	       }else if r.ProbeName == "Count" {
 			events.PublishEvent("log:uretcount", events.UretProbeCountLogEvent{ProbeName: r.ProbeName,
-				Pid: parse[0],
+				Funcname: parse[0],
 				Count: parse[1],
 			})
-	       }  else if r.ProbeName == "Frequency" {
+	       }  else if r.ProbeName == "FuncTime" {
 			events.PublishEvent("log:uretfreq", events.UretProbeFreqLogEvent{ProbeName: r.ProbeName,
-				Time: parse[1],
+				Pid:  parse[1],
+				Time: parse[2],
+				Funcname: parse[3],
 			})
 	       } else if r.ProbeName == "tcpconnect" {
 			events.PublishEvent("log:receive", events.ReceiveLogEvent{ProbeName: r.ProbeName,
@@ -256,7 +258,7 @@ func GetActiveLogs(pn string) string {
 
 		for _, log := range keys {
 			val := logs[log]
-			uretLogs = append(uretLogs, fmt.Sprintf("{PID:%s | COUNT:%s\n", val.Pid, val.Count))
+			uretLogs = append(uretLogs, fmt.Sprintf("FUNC:%s                      |   COUNT:%s\n", val.Funcname, val.Count))
 
 		}
 
@@ -277,7 +279,8 @@ func GetActiveLogs(pn string) string {
 		}
 
 	} 
-	if pn == "Frequency" {
+	if pn == "FuncTime" {
+
 		var uretLogs []string
 		logs := database.GetUretProbeFreqLogs()
 
@@ -294,7 +297,7 @@ func GetActiveLogs(pn string) string {
 
 		for _, log := range keys {
 			val := logs[log]
-			uretLogs = append(uretLogs, fmt.Sprintf("{ Time in microseconds :%s\n", val.Time))
+			uretLogs = append(uretLogs, fmt.Sprintf("PID:%s | LATms:%s | FUNC:%s \n", val.Pid, val.Time, val.Funcname))
 
 		}
 

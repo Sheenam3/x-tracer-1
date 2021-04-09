@@ -87,7 +87,7 @@ type UretProbeCountLogEvent struct {
 
 	TimeStamp int64
 	ProbeName string
-	Pid	  string
+	Funcname  string
 	Count	  string
 
 
@@ -96,7 +96,9 @@ type UretProbeFreqLogEvent struct {
 
 	TimeStamp int64
 	ProbeName string
+	Pid 	  string
 	Time	  string
+	Funcname  string
 
 
 }

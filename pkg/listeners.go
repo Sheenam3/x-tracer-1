@@ -77,7 +77,7 @@ func uretProbeCountLog(e events.Event) {
 
 		uret := events.UretProbeCountLogEvent{TimeStamp: e.TimeStamp,
 			ProbeName: e.ProbeName,
-			Pid: e.Pid,
+			Funcname: e.Funcname,
 			Count:       e.Count,
 		}
 		uretlogs := database.UretProbeCountLog(uret)
@@ -106,7 +106,9 @@ func uretProbeFreqLog(e events.Event) {
 
 		uret := events.UretProbeFreqLogEvent{TimeStamp: e.TimeStamp,
 			ProbeName: e.ProbeName,
+			Pid:	   e.Pid,
 			Time:      e.Time,
+			Funcname:  e.Funcname,
 			}
 		uretlogs := database.UretProbeFreqLog(uret)
 		err := database.UpdateUretProbeFreqLogs(uretlogs)

@@ -27,7 +27,7 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
@@ -58,17 +58,17 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
 						Unique:  false,
 						Indexer: &memdb.StringFieldIndex{Field: "ProbeName"},
 					},
-					"pid": {
-						Name:    "pid",
+					"funcname": {
+						Name:    "funcname",
 						Unique:  false,
-						Indexer: &memdb.StringFieldIndex{Field: "Pid"},
+						Indexer: &memdb.StringFieldIndex{Field: "Funcname"},
 					},
 
 					"count": {
@@ -90,17 +90,27 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
 						Unique:  false,
 						Indexer: &memdb.StringFieldIndex{Field: "ProbeName"},
 					},
+					"pid": {
+						Name:    "pid",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Pid"},
+					},
 					"time": {
 						Name:    "time",
 						Unique:  false,
 						Indexer: &memdb.StringFieldIndex{Field: "Time"},
+					},
+					"funcname": {
+						Name:    "funcname",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "Funcname"},
 					},
 				},		
 			},
@@ -116,7 +126,7 @@ func Init() {
 					"id": {
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.IntFieldIndex{Field: "Timestamp"},
+						Indexer: &memdb.IntFieldIndex{Field: "TimeStamp"},
 					},
 					"pn": {
 						Name:    "pn",
@@ -526,7 +536,7 @@ func UpdateUretProbeCountLogs(log UretProbeCountLog) error {
 	timestamp := time.Now().UnixNano()
 	logs := []*UretProbeCountLog{
 
-		{timestamp,log.ProbeName,log.Pid, log.Count},
+		{timestamp,log.ProbeName,log.Funcname, log.Count},
 	}
 
 	for _, p := range logs {
@@ -548,7 +558,7 @@ func UpdateUretProbeFreqLogs(log UretProbeFreqLog) error {
 	timestamp := time.Now().UnixNano()
 	logs := []*UretProbeFreqLog{
 
-		{timestamp,log.ProbeName,log.Time},
+		{timestamp,log.ProbeName,log.Pid,log.Time,log.Funcname},
 	}
 
 	for _, p := range logs {
