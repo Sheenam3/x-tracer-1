@@ -497,7 +497,7 @@ func viewContPid(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter Container Pid - you can use this command (docker inspect cont_id | grep m1 Pid)"
-	if iv, err := g.SetView("contpid", minX, minY/2, maxX, maxY/2); err != nil {
+	if iv, err := g.SetView("contpid", minX, minY, maxX, maxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -517,7 +517,7 @@ func viewFilePath(g *gocui.Gui, lMaxX int, lMaxY int ) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter File/Program Path"
-	if iv, err := g.SetView("filepath", minX, minY/2, maxX, maxY/2); err != nil {
+	if iv, err := g.SetView("filepath", minX, minY, maxX, maxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -538,7 +538,7 @@ func viewFuncName(g *gocui.Gui, lMaxX int, lMaxY int) error {
 	maxX := minX + w
 	maxY := minY + h
 	title := "Enter Function Name"
-	if iv, err := g.SetView("funcname", minX, minY/2, maxX, maxY/2); err != nil {
+	if iv, err := g.SetView("funcname", minX, minY, maxX, maxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}

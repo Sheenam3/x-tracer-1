@@ -349,7 +349,7 @@ func (c *StreamClient) StartClient(probename []string, pidList [][]string, contp
 
 			}()
 
-		case "Frequency":
+		case "FuncTime":
 
 			loguretfreqprobe := make(chan pp.Log, 1)
 			go pp.RunUretprobeFreq(probename[0], loguretfreqprobe, contpid, filepath, funcname)

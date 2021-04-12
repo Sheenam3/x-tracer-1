@@ -67,7 +67,7 @@ func (s *StreamServer) RouteLog(stream pb.SentLog_RouteLogServer) error {
 				Pid: parse[0],
 				Count: parse[1],
 			})
-	       }  else if r.ProbeName == "Frequency" {
+	       }  else if r.ProbeName == "FuncTime" {
 			events.PublishEvent("log:uretfreq", events.UretProbeFreqLogEvent{ProbeName: r.ProbeName,
 				Time: parse[1],
 			})
@@ -277,7 +277,7 @@ func GetActiveLogs(pn string) string {
 		}
 
 	} 
-	if pn == "Frequency" {
+	if pn == "FuncTime" {
 		var uretLogs []string
 		logs := database.GetUretProbeFreqLogs()
 

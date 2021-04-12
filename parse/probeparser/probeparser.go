@@ -37,7 +37,9 @@ func GetNS(pid string) string {
 
 func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
 
-
+	filepath = strings.Replace(filepath, "\n", "", -1)
+        funcname = strings.Replace(funcname, "\n", "", -1)
+        pid = strings.Replace(pid, "\n", "", -1)
 	command := `uprobe:` + filepath + `:` + funcname + `{ @start = nsecs; }` + `uretprobe:` + filepath + `:` + funcname + `/@start/ { @time = ((nsecs - @start)/1000);  print(@time); delete(@start); }`
 	cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
@@ -66,11 +68,13 @@ func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath s
 
 func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
 
-
-	//command  := `uretprobe:` + filepath + `:` + funcname + `{ @[pid] = count(); }` +`interval:s:1` + `{ print(@); clear(@); }`
+	filepath = strings.Replace(filepath, "\n", "", -1)
+        funcname = strings.Replace(funcname, "\n", "", -1)
+        pid = strings.Replace(pid, "\n", "", -1)
+	command  := `uretprobe:` + filepath + `:` + funcname + `{ @[pid] = count(); }` +`interval:s:1` + `{ print(@); clear(@); }`
 	//cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
 	// testing for now the below command- it worked
-	cmd := exec.Command("bpftrace", "-e" , filepath)
+	cmd := exec.Command("bpftrace","-p", pid, "-e", command)
 		fmt.Println(funcname, pid)
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
 	stdout, err := cmd.StdoutPipe()
@@ -101,7 +105,9 @@ func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath 
 
 func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
 
-
+	filepath = strings.Replace(filepath, "\n", "", -1)
+        funcname = strings.Replace(funcname, "\n", "", -1)
+        pid = strings.Replace(pid, "\n", "", -1)
 	command := `uretprobe:` + filepath + `:` + funcname + `{ printf("%d %d\n", pid, retval); }`
 	cmd := exec.Command("bpftrace", "-p", pid , "-e", command)
 	//cmd.Dir = "/usr/share/bcc/tools/ebpf"
