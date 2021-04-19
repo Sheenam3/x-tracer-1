@@ -3,8 +3,6 @@ package ui
 import (
 	"fmt"
 	"github.com/jroimartin/gocui"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/getval"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/kube"
 	"github.com/willf/pad"
 	"strings"
 	"time"
@@ -204,7 +202,7 @@ func viewNamespacesRefreshList(g *gocui.Gui) {
 			return err
 		}
 
-		namespaces, err := kube.GetNamespaces()
+		namespaces, err := getNamespaces()
 		if err != nil {
 			displayError(g, err)
 			return nil
@@ -224,7 +222,7 @@ func viewNamespacesRefreshList(g *gocui.Gui) {
 
 		}
 
-		setViewCursorToLine(g, v, ns, getval.NAMESPACE)
+		setViewCursorToLine(g, v, ns, NAMESPACE)
 
 		return nil
 	})
@@ -257,8 +255,8 @@ func viewPods(g *gocui.Gui, lMaxX int, lMaxY int) error {
 
 // Auto refresh view pods
 func viewPodsShowWithAutoRefresh(g *gocui.Gui) {
-	c := kube.GetConfig()
-	t := time.NewTicker(time.Duration(c.Frequency) * time.Second)
+	c := getConfig()
+	t := time.NewTicker(time.Duration(c.frequency) * time.Second)
 	go viewPodsRefreshList(g)
 	for {
 		select {
@@ -277,7 +275,7 @@ func viewPodsRefreshList(g *gocui.Gui) {
 			return err
 		}
 
-		pods, err := kube.GetPods()
+		pods, err := getPods()
 		if err != nil {
 			displayError(g, err)
 			return nil
@@ -295,10 +293,10 @@ func viewPodsRefreshList(g *gocui.Gui) {
 				n := pod.GetName()
 				//c := "?" // TODO CPU + Memory #20
 				//m := "?" // TODO CPU + Memory #20
-				s := kube.ColumnHelperStatus(pod.Status)
-				r := kube.ColumnHelperRestarts(pod.Status.ContainerStatuses)
-				a := kube.ColumnHelperAge(pod.CreationTimestamp)
-				cr := kube.ColumnHelperReady(pod.Status.ContainerStatuses)
+				s := columnHelperStatus(pod.Status)
+				r := columnHelperRestarts(pod.Status.ContainerStatuses)
+				a := columnHelperAge(pod.CreationTimestamp)
+				cr := columnHelperReady(pod.Status.ContainerStatuses)
 				viewPodsAddLine(v, lMaxX, n, cr, s, r, a)
 			}
 
@@ -418,7 +416,7 @@ func viewProbeNames(g *gocui.Gui) {
 		if err != nil {
 			return err
 		}
-		probes := getval.GetProbeNames()
+		probes := getProbeNames()
 		v.Clear()
 
 		if len(probes) >= 0 {
@@ -437,3 +435,9 @@ func viewProbeNames(g *gocui.Gui) {
 
 }
 
+func getProbeNames() []string {
+
+	pn := []string{"tcptracer", "tcpconnect", "tcpaccept", "tcplife", "execsnoop", "biosnoop", "cachestat", "All TCP Probes", "All Probes"}
+	return pn
+
+}

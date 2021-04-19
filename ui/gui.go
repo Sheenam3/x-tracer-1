@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "github.com/ITRI-ICL-Peregrine/x-tracer/api"
-	"github.com/ITRI-ICL-Peregrine/x-tracer/kube"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/internal/agentmanager"
 	"io"
 	"log"
 	"os"
@@ -26,7 +26,7 @@ var (
 
 var version = "master"
 var LOG_MOD string = "pod"
-//var getval.NAMESPACE string = "default"
+var NAMESPACE string = "default"
 
 // Configure globale keys
 var keys []Key = []Key{
@@ -50,23 +50,23 @@ var keys []Key = []Key{
 // Entry Point of the x-tracer
 func InitGui() {
 	var err error
-	c := kube.GetConfig()
+	c := getConfig()
 
 	// Ask version
-	if c.AskVersion {
+	if c.askVersion {
 		fmt.Println(versionFull())
 		os.Exit(0)
 	}
 
 	// Ask Help
-	if c.AskHelp {
+	if c.askHelp {
 		fmt.Println(versionFull())
 		fmt.Println(HELP)
 		os.Exit(0)
 	}
 
 	// Only used to check errors
-	kube.GetClientSet()
+	getClientSet()
 
 	g, err = gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
@@ -239,7 +239,7 @@ func showViewPodsLogs(g *gocui.Gui) (*gocui.Gui, string, io.Writer) {
 
 		// Display pod containers
 		var conName []string
-		for _, c := range kube.GetPodContainersName(p) {
+		for _, c := range getPodContainersName(p) {
 			//fmt.Fprintln(vLc, c)
 			conName = append(conName, c)
 		}
@@ -252,7 +252,7 @@ func showViewPodsLogs(g *gocui.Gui) (*gocui.Gui, string, io.Writer) {
 		lv.Clear()
 
 		fmt.Fprintln(lv, "Containers ID:")
-		for i, conId := range kube.GetPodContainersID(p) {
+		for i, conId := range getPodContainersID(p) {
 			fmt.Fprintln(lv, conName[i]+"->"+conId)
 		}
 
@@ -289,7 +289,7 @@ func refreshPodsLogs(g *gocui.Gui) error {
 	if err != nil {
 		return err
 	}
-	kube.GetPodContainerLogs(p, c, vL)
+	getPodContainerLogs(p, c, vL)
 
 	return nil
 }
@@ -361,3 +361,67 @@ func hideConfirmation(g *gocui.Gui) {
 	g.DeleteView("confirmation")
 }
 
+func startAgent(g *gocui.Gui, p string, o io.Writer, probes string) error {
+	cs := getClientSet()
+	var containerId []string
+
+	containerId = getPodContainersID(p)
+
+	targetNode := getTargetNode(p)
+
+	nodeIp := getNodeIp()
+
+	if probes == "All Probes" {
+
+		pn := getProbeNames()
+		allpn := strings.Join(pn, ",")
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, allpn)
+
+		//Start x-agent Pod
+		fmt.Fprintln(o, "Starting x-agent Pod...")
+
+		agent.ApplyAgentPod()
+
+		fmt.Fprintln(o, "Starting x-agent Service...")
+		agent.ApplyAgentService()
+
+		agent.SetupCloseHandler()
+
+	} else if probes == "All TCP Probes" {
+		pn := getTcpProbeNames()
+		tcppn := strings.Join(pn, ",")
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, tcppn)
+
+		fmt.Fprintln(o, "Starting x-agent Pod...")
+
+		agent.ApplyAgentPod()
+
+		fmt.Fprintln(o, "Starting x-agent Service...")
+		agent.ApplyAgentService()
+
+		agent.SetupCloseHandler()
+
+	} else {
+		agent := agentmanager.New(containerId[0], targetNode, nodeIp, cs, probes)
+
+		//Start x-agent Pod
+		fmt.Fprintln(o, "Starting x-agent Pod...")
+
+		agent.ApplyAgentPod()
+
+		fmt.Fprintln(o, "Starting x-agent Service...")
+		agent.ApplyAgentService()
+
+		agent.SetupCloseHandler()
+
+	}
+
+	return nil
+}
+
+func getTcpProbeNames() []string {
+
+	pn := []string{"tcptracer", "tcpconnect", "tcpaccept"}
+	return pn
+
+}
