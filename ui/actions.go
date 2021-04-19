@@ -4,6 +4,8 @@ import (
 	"github.com/ITRI-ICL-Peregrine/x-tracer/events"
 	"github.com/jroimartin/gocui"
 	"time"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/getval"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/kube"
 )
 
 var NAMESPACES_DISPLAYED bool = false
@@ -12,7 +14,7 @@ var NAMESPACES_DISPLAYED bool = false
 
 func actionGlobalQuit(g *gocui.Gui, v *gocui.View) error {
 
-	if err := deletePod("x-agent"); err != nil {
+	if err := kube.DeletePod("x-agent"); err != nil {
 		return err
 	}
 
@@ -72,7 +74,7 @@ func actionViewPodsDelete(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 
-	if err := deletePod(p); err != nil {
+	if err := kube.DeletePod(p); err != nil {
 		return err
 	}
 
@@ -122,7 +124,7 @@ func actionViewNamespacesDown(g *gocui.Gui, v *gocui.View) error {
 // Namespace: Choose
 func actionViewNamespacesSelect(g *gocui.Gui, v *gocui.View) error {
 	line, err := getViewLine(g, v)
-	NAMESPACE = line
+	getval.NAMESPACE = line
 	go viewPodsRefreshList(g)
 	actionGlobalToggleViewNamespaces(g, v)
 	displayConfirmation(g, line+" namespace selected")
@@ -136,14 +138,14 @@ func actionViewProbesSelect(g *gocui.Gui, v *gocui.View) error {
 
 	G, p, lv := showViewPodsLogs(g)
 	displayConfirmation(g, line+" probe selected")
-	startAgent(G, p, lv, line)
+        kube.StartAgent(G, p, lv, line)
 	G.SetViewOnTop("logs")
 	G.SetCurrentView("logs")
 	return err
 }
 
 func actionViewProbesList(g *gocui.Gui, v *gocui.View) error {
-	if err := deletePod("x-agent"); err != nil {
+	if err := kube.DeletePod("x-agent"); err != nil {
 		return err
 	}
 	LOG_MOD = "pod"
