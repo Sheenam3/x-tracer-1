@@ -1,4 +1,4 @@
-package ui
+package kube
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/kubectl/pkg/describe"
 	"k8s.io/kubectl/pkg/describe/versioned"
+	"github.com/ITRI-ICL-Peregrine/x-tracer/getval"
 	"log"
 	"os"
 	"reflect"
@@ -20,11 +21,11 @@ import (
 )
 
 // Get Kubernetes client set
-func getClientSet() *kubernetes.Clientset {
-	c := getConfig()
+func GetClientSet() *kubernetes.Clientset {
+	c := GetConfig()
 
 	// Use the current context in kubeconfig
-	cc, err := clientcmd.BuildConfigFromFlags("", *c.kubeConfig)
+	cc, err := clientcmd.BuildConfigFromFlags("", *c.KubeConfig)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
@@ -41,32 +42,32 @@ func getClientSet() *kubernetes.Clientset {
 }
 
 //Get Field String
-func getFieldString(e *v1.ContainerStatus, field string) string {
+func GetFieldString(e *v1.ContainerStatus, field string) string {
 	r := reflect.ValueOf(e)
 	f := reflect.Indirect(r).FieldByName(field)
 	return f.String()
 }
 
 // Get pods (use namespace)
-func getPods() (*v1.PodList, error) {
-	cs := getClientSet()
+func GetPods() (*v1.PodList, error) {
+	cs := GetClientSet()
 
-	return cs.CoreV1().Pods(NAMESPACE).List(metav1.ListOptions{})
+	return cs.CoreV1().Pods(getval.NAMESPACE).List(metav1.ListOptions{})
 }
 
 // Get namespaces
-func getNamespaces() (*v1.NamespaceList, error) {
-	cs := getClientSet()
+func GetNamespaces() (*v1.NamespaceList, error) {
+	cs := GetClientSet()
 
 	return cs.CoreV1().Namespaces().List(metav1.ListOptions{})
 }
 
 // Get the pod containers
-func getPodContainersName(p string) []string {
+func GetPodContainersName(p string) []string {
 	var pc []string
-	cs := getClientSet()
+	cs := GetClientSet()
 
-	pod, _ := cs.CoreV1().Pods(NAMESPACE).Get(p, metav1.GetOptions{})
+	pod, _ := cs.CoreV1().Pods(getval.NAMESPACE).Get(p, metav1.GetOptions{})
 	for _, c := range pod.Spec.Containers {
 		pc = append(pc, c.Name)
 	}
@@ -74,14 +75,14 @@ func getPodContainersName(p string) []string {
 	return pc
 }
 
-func getPodContainersID(p string) []string {
-	cs := getClientSet()
+func GetPodContainersID(p string) []string {
+	cs := GetClientSet()
 	var id []string
-	podObj, _ := cs.CoreV1().Pods(NAMESPACE).Get(p, metav1.GetOptions{})
+	podObj, _ := cs.CoreV1().Pods(getval.NAMESPACE).Get(p, metav1.GetOptions{})
 
 	var conId string
 	for c := range podObj.Status.ContainerStatuses {
-		conId = getFieldString(&podObj.Status.ContainerStatuses[c], "ContainerID")
+		conId = GetFieldString(&podObj.Status.ContainerStatuses[c], "ContainerID")
 		conId = strings.SplitAfter(conId, "://")[1]
 		id = append(id, conId)
 	}
@@ -89,23 +90,23 @@ func getPodContainersID(p string) []string {
 }
 
 // Delete pod
-func deletePod(p string) error {
-	cs := getClientSet()
+func DeletePod(p string) error {
+	cs := GetClientSet()
 
-	return cs.CoreV1().Pods(NAMESPACE).Delete(p, &metav1.DeleteOptions{})
+	return cs.CoreV1().Pods(getval.NAMESPACE).Delete(p, &metav1.DeleteOptions{})
 }
 
 // Get pod container logs
-func getPodContainerLogs(p string, c string, o io.Writer) error {
+func GetPodContainerLogs(p string, c string, o io.Writer) error {
 	tl := int64(50)
-	cs := getClientSet()
+	cs := GetClientSet()
 
 	opts := &v1.PodLogOptions{
 		Container: c,
 		TailLines: &tl,
 	}
 
-	req := cs.CoreV1().Pods(NAMESPACE).GetLogs(p, opts)
+	req := cs.CoreV1().Pods(getval.NAMESPACE).GetLogs(p, opts)
 
 	readCloser, err := req.Stream()
 	if err != nil {
@@ -119,10 +120,10 @@ func getPodContainerLogs(p string, c string, o io.Writer) error {
 	return err
 }
 
-func getTargetNode(p string) string {
+func GetTargetNode(p string) string {
 
-	cs := getClientSet()
-	podObj, _ := cs.CoreV1().Pods(NAMESPACE).Get(p, metav1.GetOptions{})
+	cs := GetClientSet()
+	podObj, _ := cs.CoreV1().Pods(getval.NAMESPACE).Get(p, metav1.GetOptions{})
 	podDesc := versioned.PodDescriber{Interface: cs}
 	descStr, err := podDesc.Describe(podObj.Namespace, podObj.Name, describe.DescriberSettings{ShowEvents: false})
 	if err != nil {
@@ -138,21 +139,21 @@ func getTargetNode(p string) string {
 
 }
 
-func getNodeIp() string {
+func GetNodeIp() string {
 
 	var currentNode *v1.Node
 	var err error
-	cs := getClientSet()
-	c := getConfig()
+	cs := GetClientSet()
+	c := GetConfig()
 
-	if c.debug {
+	if c.Debug {
 		currentNode, err = cs.CoreV1().Nodes().Get("kind-control-plane", metav1.GetOptions{})
 		if err != nil {
 			log.Println(err)
 		}
 
 	} else {
-		currentNode, err = cs.CoreV1().Nodes().Get(getHostName(), metav1.GetOptions{})
+		currentNode, err = cs.CoreV1().Nodes().Get(GetHostName(), metav1.GetOptions{})
 		/*if err != nil {
 		  log.Println(err)
 		  }*/
@@ -170,7 +171,7 @@ func getNodeIp() string {
 }
 
 //Get host name on which x-tracer is running
-func getHostName() string {
+func GetHostName() string {
 
 	name, err := os.Hostname()
 	if err != nil {
@@ -182,7 +183,7 @@ func getHostName() string {
 }
 
 // Column helper: Restarts
-func columnHelperRestarts(cs []v1.ContainerStatus) string {
+func ColumnHelperRestarts(cs []v1.ContainerStatus) string {
 	r := 0
 	for _, c := range cs {
 		r = r + int(c.RestartCount)
@@ -191,7 +192,7 @@ func columnHelperRestarts(cs []v1.ContainerStatus) string {
 }
 
 // Column helper: Age
-func columnHelperAge(t metav1.Time) string {
+func ColumnHelperAge(t metav1.Time) string {
 	d := time.Now().Sub(t.Time)
 
 	if d.Hours() > 1 {
@@ -211,12 +212,12 @@ func columnHelperAge(t metav1.Time) string {
 }
 
 // Column helper: Status
-func columnHelperStatus(s v1.PodStatus) string {
+func ColumnHelperStatus(s v1.PodStatus) string {
 	return fmt.Sprintf("%s", s.Phase)
 }
 
 // Column helper: Ready
-func columnHelperReady(cs []v1.ContainerStatus) string {
+func ColumnHelperReady(cs []v1.ContainerStatus) string {
 	cr := 0
 	for _, c := range cs {
 		if c.Ready {
