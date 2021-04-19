@@ -57,7 +57,9 @@ func RunUretprobeFreq(tool string, loguretprobe chan Log, pid string, filepath s
 	for {
 
 		line, _, _ := buf.ReadLine()
+		fmt.Println("check 1")
 		parsedLine := strings.Fields(string(line))
+		fmt.Println("check 2")
 		if (len(parsedLine) > 0) && parsedLine[0] != "TIME"{
 			//fmt.Println("Freq",parsedLine[0])
 			//fmt.Println("Freq",parsedLine[1])
@@ -117,28 +119,32 @@ func RunUretprobeCount(tool string, loguretprobe chan Log, pid string, filepath 
 
 
 func RunUretprobe(tool string, loguretprobe chan Log, pid string, filepath string, funcname string) {
-
+	
 	filepath = strings.Replace(filepath, "\n", "", -1)
 	funcname = strings.Replace(funcname, "\n", "", -1)
 	pid = strings.Replace(pid, "\n", "", -1)
-	path := "/proc/" + pid + "/root/" + filepath
+	last := "-fn " + funcname
+	path := "/proc/" + pid + "/root/" + filepath + last
         path = strings.Replace(path, "\n", "", -1)
-
+	fmt.Println("chekpoint 1")
 	//command := `uretprobe:` +filepath+ `:` + funcname + `{ printf("%d %d\n", pid, retval); }`
-	cmd := exec.Command("./funcretval", "-s", path , "-fn", funcname)
+	cmd := exec.Command("./funcretval", "-s "+ path) //, "-fn", funcname)
 	cmd.Dir = "/usr/share/bcc/tools/ebpf"
+	fmt.Println("cmnd:",cmd)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
 	cmd.Start()
 	buf := bufio.NewReader(stdout)
-
+	fmt.Println(stdout)
+	fmt.Println(buf)
 	for {
 
 		line, _, _ := buf.ReadLine()
+		fmt.Println("CHeck 3")
 		parsedLine := strings.Fields(string(line))
-	fmt.Println("trrr:", cmd)
+         	fmt.Println("trrr:", cmd)
 
                 if (len(parsedLine) > 0) && parsedLine[0] != "TIME"{
 
